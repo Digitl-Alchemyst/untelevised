@@ -6,7 +6,6 @@ import { RichTextComponents } from '@/c/RichTextComponents';
 import SocialShare from '@/c/SocialShare';
 import { client } from '@/l/sanity.client';
 import urlForImage from '@/u/urlForImage';
-import Link from 'next/link';
 import ClientSideRoute from '@/components/ClientSideRoute';
 // import Comments from '@/c/post/Comments';
 
