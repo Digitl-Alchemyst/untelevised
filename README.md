@@ -14,6 +14,7 @@
 - [ ] Add search functionality
 - [ ] Design a responsive layout
 - [ ] Comments Section on Articles
+- [ ] Add Ticker Headline Schema 
 
 ### Bugs
 
