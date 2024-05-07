@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import urlForImage from '@/u/urlForImage';
 import { ArrowUpRightIcon, ShareIcon } from '@heroicons/react/24/solid';
+import formatDate from '@/lib/util/formatDate';
 
 
 type Props = {
@@ -23,18 +24,17 @@ function ArticleCardLg({ post }: Props) {
             <p className='text-sm font-bold lg:text-base'>{post.title}</p>
           </div>
           <div className='flex flex-col items-center gap-y-2 md:flex-row md:gap-x-2'>
-            {post.categories && post.categories.length > 0 ? ( // Check if categories exist and are not empty
-              post.categories.map((category) => (
-                <div
-                  key={category._id}
-                  className='hidden rounded-xl border border-slate-900 bg-untele/70 px-5 py-2 text-center text-xs font-light text-slate-900 md:flex lg:text-sm'
-                >
-                  <p>{category.title}</p>
-                </div>
-              ))
-            ) : (
-              null // Display nothing if no category for article
-            )}
+            {post.categories && post.categories.length > 0 // Check if categories exist and are not empty
+              ? post.categories.map((category) => (
+                  <div
+                    key={category._id}
+                    className='hidden rounded-xl border border-slate-900 bg-untele/70 px-5 py-2 text-center text-xs font-light text-slate-900 md:flex lg:text-sm'
+                  >
+                    <p>{category.title}</p>
+                  </div>
+                ))
+              : null // Display nothing if no category for article
+            }
           </div>
         </div>
       </div>
@@ -44,11 +44,7 @@ function ArticleCardLg({ post }: Props) {
             By: {post.author.name}
           </h4>
           <h4 className='text-sm font-light md:text-base'>
-            {new Date(post._createdAt).toLocaleDateString('en-US', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
-            })}
+            {formatDate(post.eventDate || post._createdAt)}
           </h4>
         </div>
         <p className='line-clamp-3 px-4 pb-1 pt-2'>{post.description}</p>

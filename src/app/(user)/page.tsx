@@ -66,7 +66,6 @@ export default async function HomePage() {
         <div className='grid grid-cols-1 gap-x-10 gap-y-12 px-10 pb-24 md:grid-cols-2 xl:grid-cols-3'>
           {posts.map((post) => (
             <ClientSideRoute route={`/post/${post.slug?.current}`} key={post._id}>
-
               <ArticleCardLg key={post._id} post={post} />
             </ClientSideRoute>
           ))}
