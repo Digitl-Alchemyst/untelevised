@@ -38,6 +38,7 @@ interface Article extends Base {
   title: string;
   keywords: string;
   description: string;
+  location: string;
   videoLink: string;
   isCurrentEvent: boolean;
   hasEmbeddedVideo: string;
@@ -47,16 +48,26 @@ interface Article extends Base {
 }
 
 interface Author extends Base {
+  slug: Slug;
+  name: string;
+  title: string;
+  website: string;
+  twitter: string;
+  instagram: string;
+  facebook: string;
+  youtube: string;
+  linkedin: string;
+  tiktok: string;
+  email: string;
   bio: Block[];
   image: Image;
-  name: string;
-  slug: Slug;
 }
 
 
 interface Image {
   _type: 'image';
   asset: Reference;
+  alt: string;
 }
 
 interface Reference {

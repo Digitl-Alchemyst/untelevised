@@ -12,8 +12,8 @@ if (!writeToken) {
   throw new Error('Missing SANITY_API_WRITE_TOKEN');
 }
 
-experimental_taintUniqueValue(
-  'Do not pass the sanity API read token to the client.',
-  process,
-  readToken,
-);
+// experimental_taintUniqueValue(
+//   'Do not pass the sanity API read token to the client.',
+//   process,
+//   readToken,
+// );

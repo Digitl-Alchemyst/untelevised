@@ -22,3 +22,4 @@
 
 - [ ] Refactor the database connection logic
 - [ ] Optimize the data retrieval process
+- [ ] Authors Page refactor related articles to filter with groq query

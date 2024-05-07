@@ -9,11 +9,11 @@ type PageRoutes = Record<string, PageInfo>;
 // Define the pageRoutes object with type annotations
 const pageRoutes: PageRoutes = {
   home: { path: '/' },
-  blog: { path: '/blog/:slug' },
-  blogcategory: { path: '/blogcategory/:slug' },
+  post: { path: '/post/:slug' },
+  category: { path: '/category/:slug' },
   gallery: { path: '/gallery/:slug' },
   gallerycategory: { path: '/gallerycategory/:slug' },
-  author: { path: '/about' },
+  author: { path: '/author/:slug' },
 };
 
 // Define the resolveHref function with type annotations

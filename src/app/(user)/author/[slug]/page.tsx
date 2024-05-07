@@ -17,6 +17,8 @@ import {
   FaYoutube,
 } from 'react-icons/fa';
 import Link from 'next/link';
+import sanityFetch from '@/lib/sanity/fetch';
+import { queryAuthorBySlug } from '@/lib/sanity/queries';
 
 type Props = {
   params: {
@@ -27,40 +29,8 @@ type Props = {
 // export const revalidate = 60 * 60 * 24 * 7;
 export const revalidate = 15;
 
-export async function generateStaticParams() {
-  const query = groq`*[_type=='author']
-  {
-    slug
-  }`;
-
-  const slugs: any = await client.fetch(query);
-  const slugRoutes = slugs ? slugs.map((slug: any) => slug.slug.current) : [];
-
-  return slugRoutes.map((slug) => ({
-    slug,
-  }));
-}
 
 async function Author({ params: { slug } }: Props) {
-  const query = groq`
-    *[_type == "author" && slug.current == $slug][0] {
-      ...,
-      author-> {
-        name,
-        image,
-        bio,
-        title,
-        social {
-          twitter,
-          instagram,
-          website,
-          facebook,
-          youtube,
-          linkedin,
-          tiktok
-        },
-      },
-    }`;
 
   const queryPost = groq`
   *[_type=='post'] {
@@ -74,8 +44,8 @@ async function Author({ params: { slug } }: Props) {
 
   const posts = await client.fetch(queryPost);
 
-  const author: any = await client.fetch(query, { slug });
-
+  const author = await getAuthorBySlug(slug);
+  
   return (
     <>
       <hr className='mx-auto mb-8 max-w-[95wv] border-untele md:max-w-[85vw]' />
@@ -84,7 +54,7 @@ async function Author({ params: { slug } }: Props) {
           <div className='flex flex-row space-x-8 px-6 py-4 md:space-x-18'>
             <div className='rounded-md border border-untele/80 shadow-md'>
               <Image
-                src={urlForImage(author.image).url()}
+                src={urlForImage(author.image as any)?.url() || ''}
                 width={320}
                 height={320}
                 alt='image'
@@ -183,7 +153,7 @@ async function Author({ params: { slug } }: Props) {
                   <div className='flex flex-col space-y-4'>
                     <div className='relative h-80 w-full drop-shadow-xl transition-transform duration-200 ease-out hover:scale-105'>
                       <Image
-                        src={urlForImage(post.mainImage).url()}
+                        src={urlForImage(post.mainImage as any)?.url() || ''}
                         fill
                         alt='image'
                         className='rounded-md object-fill'
@@ -195,9 +165,9 @@ async function Author({ params: { slug } }: Props) {
                       {post.categories &&
                         post.categories.map((category) => (
                           <div
-                            key={category._id}
+                          key={category._id}
                             className='max-w-[160px] rounded-xl border border-untele bg-slate-900/80 px-5 py-2 text-center text-xs font-semibold text-untele lg:text-sm'
-                          >
+                            >
                             <p>{category.title}</p>
                           </div>
                         ))}
@@ -213,3 +183,27 @@ async function Author({ params: { slug } }: Props) {
 }
 
 export default Author;
+
+// Call the Sanity Fetch Function for the Photographer Information
+async function getAuthorBySlug(slug: string) {
+  // Fetch blog data from Sanity
+  const author: Author = await sanityFetch({
+    query: queryAuthorBySlug,
+    params: { slug },
+    tags: ['author'],
+  });
+  return author;
+}
+export async function generateStaticParams() {
+  const query = groq`*[_type=='author']
+  {
+    slug
+  }`;
+
+  const slugs: any = await client.fetch(query);
+  const slugRoutes = slugs ? slugs.map((slug: any) => slug.slug.current) : [];
+
+  return slugRoutes.map((slug) => ({
+    slug,
+  }));
+}
