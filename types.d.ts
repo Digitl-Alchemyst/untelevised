@@ -61,6 +61,7 @@ interface Author extends Base {
   email: string;
   bio: Block[];
   image: Image;
+  relatedArticles: Article[];
 }
 
 

@@ -137,10 +137,10 @@ export default async function Article({ params: { slug } }: Props) {
   );
 };
 
-// Call the Sanity Fetch Function for the Blog List
+// Call the Sanity Fetch Function for the Article by Slug
 async function getArticleBySlug(slug: string) {
   try {
-    // Fetch blog data from Sanity
+    // Fetch article data from Sanity
     const post = await sanityFetch({
       query: queryArticleBySlug,
       params: { slug },
@@ -154,7 +154,7 @@ async function getArticleBySlug(slug: string) {
   }
 }
 
-// Generate the static params for the blog list
+// Generate the static params for the article list
 export async function generateStaticParams() {
   const query = groq`*[_type=='post']
   {

@@ -7,6 +7,7 @@ import ArticleCardLg from '@/components/cards/ArticleCardLg';
 import LiveWidget from '@/components/cards/LiveWidget';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import ClientSideRoute from '@/components/ClientSideRoute';
 
 const queryPost = groq`
   *[_type=='post'] {
@@ -60,9 +61,20 @@ export default async function HomePage() {
   return (
     <div className='mx-auto max-w-[95wv] md:max-w-[85vw]'>
       <LiveWidget liveEvents={currentLiveEvents} />{' '}
-      <ArticleCardLg posts={posts} />
+      <div>
+        <hr className='mb-8 border-untele' />
+        <div className='grid grid-cols-1 gap-x-10 gap-y-12 px-10 pb-24 md:grid-cols-2 xl:grid-cols-3'>
+          {posts.map((post) => (
+            <ClientSideRoute route={`/post/${post.slug?.current}`} key={post._id}>
+
+              <ArticleCardLg key={post._id} post={post} />
+            </ClientSideRoute>
+          ))}
+        </div>
+      </div>
       <Analytics />
       <SpeedInsights />
     </div>
   );
 }
+;
