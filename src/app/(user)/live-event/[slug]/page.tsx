@@ -8,6 +8,7 @@ import { client } from '@/l/sanity/client';
 import urlForImage from '@/u/urlForImage';
 import Link from 'next/link';
 import EventMap from '@/components/EventMap';
+import formatDate from '@/lib/util/formatDate';
 // export { generateMetadata } from '@/util/generateLiveEventMetadata';
 
 type Props = {
@@ -108,7 +109,7 @@ async function Article({ params: { slug } }: Props) {
           {/* Image  */}
           <div className='h-auto min-w-max xl:w-full'>
             <Image
-              src={urlForImage(liveEvent.mainImage).url()}
+              src={urlForImage(liveEvent.mainImage as any)?.url() || ''}
               alt='Image Description'
               style={{
                 width: '100%',
@@ -134,11 +135,7 @@ async function Article({ params: { slug } }: Props) {
               <div>
                 {/* <h3>{liveEvent.location}</h3> */}
                 <p>
-                  {new Date(liveEvent.eventDate).toLocaleDateString('en-US', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                  })}
+                  {formatDate(liveEvent.eventDate || liveEvent._createdAt)}
                 </p>
               </div>
             </div>

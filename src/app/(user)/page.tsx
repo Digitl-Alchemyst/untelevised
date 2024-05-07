@@ -6,6 +6,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import ClientSideRoute from '@/components/ClientSideRoute';
 import { queryAllPost, queryLiveEvents } from '@/lib/sanity/queries';
 import sanityFetch from '@/lib/sanity/fetch';
+import resolveHref from '@/lib/util/resolveHref';
 
 export default async function HomePage() {
   const frontPageNews = await getFrontPageNews();
@@ -19,7 +20,7 @@ export default async function HomePage() {
         <div className='grid grid-cols-1 gap-x-10 gap-y-12 px-10 pb-24 md:grid-cols-2 xl:grid-cols-3'>
           {posts.map((post) => (
             <ClientSideRoute
-              route={`/post/${post.slug?.current}`}
+              route={resolveHref('post', post.slug?.current) || ''}
               key={post._id}
             >
               <ArticleCardLg post={post} />
@@ -41,7 +42,7 @@ async function getFrontPageNews() {
       query: queryLiveEvents,
       tags: ['liveEvent'],
     });
-    
+
     // Fetch article data from Sanity for all articles
     const posts: Article[] = await sanityFetch({
       query: queryAllPost,

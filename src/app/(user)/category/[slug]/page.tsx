@@ -5,6 +5,7 @@ import ArticleCardLg from '@/components/cards/ArticleCardLg';
 import { queryArticleByCategory } from '@/lib/sanity/queries';
 import ClientSideRoute from '@/components/ClientSideRoute';
 import sanityFetch from '@/lib/sanity/fetch';
+import resolveHref from '@/lib/util/resolveHref';
 
 type Props = {
   params: {
@@ -22,7 +23,7 @@ export default async function CategoryPage({ params: { slug } }: Props) {
         <div className='grid grid-cols-1 gap-x-10 gap-y-12 px-10 pb-24 md:grid-cols-2 xl:grid-cols-3'>
           {articles?.map((post) => (
             <ClientSideRoute
-              route={`/post/${post.slug?.current}`}
+              route={resolveHref('post', post.slug?.current) || ''}
               key={post._id}
             >
               <ArticleCardLg post={post} />

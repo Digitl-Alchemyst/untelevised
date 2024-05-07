@@ -10,6 +10,7 @@ import { queryAuthorBySlug } from '@/lib/sanity/queries';
 import AuthorLinks from '@/components/global/AuthorLinks';
 import ClientSideRoute from '@/components/ClientSideRoute';
 import ArticleCardLg from '@/components/cards/ArticleCardLg';
+import resolveHref from '@/lib/util/resolveHref';
 type Props = {
   params: {
     slug: string;
@@ -60,7 +61,7 @@ export default async function Author({ params: { slug } }: Props) {
           {author.relatedArticles?.map((post) => (
             <ClientSideRoute
               key={post._id}
-              route={`/post/${post.slug.current}`}
+              route={resolveHref('post', post.slug?.current) || ''}
             >
               <ArticleCardLg post={post} />
             </ClientSideRoute>

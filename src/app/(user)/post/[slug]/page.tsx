@@ -51,9 +51,7 @@ export default async function Article({ params: { slug } }: Props) {
                     <p>{formatDate(article.eventDate || article._createdAt)}</p>
                   </div>
                   <ClientSideRoute
-                    route={
-                      resolveHref('author', article.author.slug?.current) || ''
-                    }
+                    route={resolveHref('author', article.author.slug?.current) || ''}
                   >
                     <div className='flex items-center justify-start space-x-3 py-2'>
                       <Image
