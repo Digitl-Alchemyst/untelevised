@@ -1,6 +1,37 @@
 /* eslint-disable import/prefer-default-export */
 import { groq } from 'next-sanity';
 
+export const queryAllPost = groq`
+  *[_type=='post'] {
+    ...,
+    author->,
+    categories[]->,
+    description,
+    publistedAt,
+  } 
+  | order(_createdAt desc)
+`;
+
+export const queryLiveEvents = groq`
+  *[_type=='liveEvent' && isCurrentEvent == true] {
+   ...,
+    description,
+    title,
+    slug,
+    eventDate,
+    keyEvent[]->,
+      relatedArticles[]-> {
+        slug,
+        _id,
+        title,
+        _createdAt,
+        description,
+        eventDate,
+    }
+  } 
+  | order(_createdAt desc)
+`;
+
 export const queryArticleBySlug = groq`
     *[_type == 'post' && slug.current == $slug][0] {
       ...,

@@ -8,7 +8,7 @@ import { client } from '@/l/sanity/client';
 import urlForImage from '@/u/urlForImage';
 import Link from 'next/link';
 import EventMap from '@/components/EventMap';
-export { generateMetadata } from '@/util/generateLiveEventMetadata';
+// export { generateMetadata } from '@/util/generateLiveEventMetadata';
 
 type Props = {
   params: {

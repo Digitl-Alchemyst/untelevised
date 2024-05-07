@@ -4,6 +4,7 @@ import { client } from '@/lib/sanity/client';
 import ArticleCardLg from '@/components/cards/ArticleCardLg';
 import { queryArticleByCategory } from '@/lib/sanity/queries';
 import ClientSideRoute from '@/components/ClientSideRoute';
+import sanityFetch from '@/lib/sanity/fetch';
 
 type Props = {
   params: {
@@ -11,22 +12,20 @@ type Props = {
   };
 };
 
-export const revalidate = 180;
-
 export default async function CategoryPage({ params: { slug } }: Props) {
-  const articles = await client.fetch(queryArticleByCategory, { slug });
+  const articles = await getArticlesByCategory(slug);
 
   return (
     <div className='mx-auto max-w-[95wv] md:max-w-[85vw]'>
       <div>
         <hr className='mb-8 border-untele' />
         <div className='grid grid-cols-1 gap-x-10 gap-y-12 px-10 pb-24 md:grid-cols-2 xl:grid-cols-3'>
-          {articles.map((post) => (
+          {articles?.map((post) => (
             <ClientSideRoute
               route={`/post/${post.slug?.current}`}
               key={post._id}
             >
-              <ArticleCardLg key={post._id} post={post} />
+              <ArticleCardLg post={post} />
             </ClientSideRoute>
           ))}
         </div>
@@ -35,15 +34,26 @@ export default async function CategoryPage({ params: { slug } }: Props) {
   );
 }
 
+async function getArticlesByCategory(slug: string): Promise<Article[] | null> {
+  try {
+    // Fetch author data from Sanity
+    const articles: Article[] = await sanityFetch({
+      query: queryArticleByCategory,
+      params: { slug },
+      tags: ['post'],
+    });
+    return articles;
+  } catch (error) {
+    console.error('Failed to fetch author:', error);
+    // Return null or a default author object if necessary
+    return null;
+  }
+}
 // Generate the static params for the category list
 export async function generateStaticParams() {
-  const query = groq`*[_type=='category']
-  {
-    slug
-  }`;
+  const query = groq`*[_type=='category'] { slug }`;
   const slugs: Article[] = await client.fetch(query);
-  const slugRoutes = slugs ? slugs.map((slug) => slug.slug.current) : [];
-  
+  const slugRoutes = slugs ? slugs.map((slug) => slug.slug.current) : [];  
   return slugRoutes.map((slug) => ({
     slug,
   }));

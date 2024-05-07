@@ -92,14 +92,9 @@ async function getAuthorBySlug(slug: string): Promise<Author | null> {
 
 // Generate the static params for the author list
 export async function generateStaticParams() {
-  const query = groq`*[_type=='author']
-  {
-    slug
-  }`;
-
+  const query = groq`*[_type=='author'] { slug }`;
   const slugs: any = await client.fetch(query);
   const slugRoutes = slugs ? slugs.map((slug: any) => slug.slug.current) : [];
-
   return slugRoutes.map((slug) => ({
     slug,
   }));

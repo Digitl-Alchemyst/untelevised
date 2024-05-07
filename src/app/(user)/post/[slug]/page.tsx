@@ -48,7 +48,7 @@ export default async function Article({ params: { slug } }: Props) {
                 <div className='space-y-2'>
                   <h1 className='text-3xl font-bold'>{article.title}</h1>
                   <div>
-                    <h3>{article.location}</h3>
+                    <h3>{article.location || null}</h3>
                     <p>{formatDate(article.eventDate || article._createdAt)}</p>
                   </div>
                   <ClientSideRoute
@@ -156,14 +156,9 @@ async function getArticleBySlug(slug: string) {
 
 // Generate the static params for the article list
 export async function generateStaticParams() {
-  const query = groq`*[_type=='post']
-  {
-    slug
-  }`;
-
+  const query = groq`*[_type=='post'] { slug }`;
   const slugs: Article[] = await client.fetch(query);
   const slugRoutes = slugs ? slugs.map((slug) => slug.slug.current) : [];
-
   return slugRoutes.map((slug) => ({
     slug,
   }));
