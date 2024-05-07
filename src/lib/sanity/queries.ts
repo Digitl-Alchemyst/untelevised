@@ -32,6 +32,20 @@ export const queryLiveEvents = groq`
   | order(_createdAt desc)
 `;
 
+export const queryEventBySlug = groq`
+    *[_type == "liveEvent" && slug.current == $slug][0] {
+      ...,
+      tag[]->,
+      keyEvent[]->,
+      relatedArticles[]-> {
+        slug,
+        _id,
+        title,
+        _createdAt,
+        description,
+        eventDate,
+      }
+    }`;
 export const queryArticleBySlug = groq`
     *[_type == 'post' && slug.current == $slug][0] {
       ...,
