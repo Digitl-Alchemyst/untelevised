@@ -5,23 +5,22 @@ import { PortableText } from '@portabletext/react';
 import { RichTextComponents } from '@/c/RichTextComponents';
 import { client } from '@/l/sanity/client';
 import urlForImage from '@/u/urlForImage';
-import Link from 'next/link';
 import sanityFetch from '@/lib/sanity/fetch';
 import { queryAuthorBySlug } from '@/lib/sanity/queries';
-import formatDate from '@/lib/util/formatDate';
 import AuthorLinks from '@/components/global/AuthorLinks';
+import ClientSideRoute from '@/components/ClientSideRoute';
+import ArticleCardLg from '@/components/cards/ArticleCardLg';
 type Props = {
   params: {
     slug: string;
   };
 };
 
-// export const revalidate = 60 * 60 * 24 * 7;
 export const revalidate = 15;
 
 export default async function Author({ params: { slug } }: Props) {
   const author = await getAuthorBySlug(slug);
-  
+
   return (
     <>
       <hr className='mx-auto mb-8 max-w-[95wv] border-untele md:max-w-[85vw]' />
@@ -48,16 +47,9 @@ export default async function Author({ params: { slug } }: Props) {
               <AuthorLinks author={author} />
             </div>
           </div>
-          {author.bio && (
-            <div className='flex flex-row justify-between px-6 py-5'>
-              <div>
-                  <PortableText
-                    value={author.bio}
-                    components={RichTextComponents}
-                  />
-              </div>
-            </div>
-          )}
+          <div className='flex flex-col justify-between px-6 py-5'>
+            <PortableText value={author.bio} components={RichTextComponents} />
+          </div>
         </div>
       </section>
 
@@ -68,35 +60,12 @@ export default async function Author({ params: { slug } }: Props) {
         </h1>
         <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 '>
           {author.relatedArticles?.map((post) => (
-            <Link
+            <ClientSideRoute
               key={post._id}
-              href={`/post/${post.slug.current}`}
-              className='flex flex-col justify-between rounded-md border border-untele/80 bg-slate-400 text-slate-900 shadow-md'
+              route={`/post/${post.slug.current}`}
             >
-              <div className='flex flex-col space-y-4'>
-                <div className='relative h-80 w-full drop-shadow-xl transition-transform duration-200 ease-out hover:scale-105'>
-                  <Image
-                    src={urlForImage(post.mainImage as any)?.url() || ''}
-                    fill
-                    alt='image'
-                    className='rounded-md object-fill'
-                  />
-                </div>
-                <div className='flex flex-col space-y-2 px-4 pb-3'>
-                  <h3 className='text-lg font-semibold'>{post.title}</h3>
-                  <p>{formatDate(post.eventDate || post._createdAt)}</p>
-                  {post.categories &&
-                    post.categories.map((category) => (
-                      <div
-                        key={category._id}
-                        className='max-w-[160px] rounded-xl border border-untele bg-slate-900/80 px-5 py-2 text-center text-xs font-semibold text-untele lg:text-sm'
-                      >
-                        <p>{category.title}</p>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            </Link>
+              <ArticleCardLg post={post} />
+            </ClientSideRoute>
           ))}
         </div>
       </section>
@@ -105,14 +74,20 @@ export default async function Author({ params: { slug } }: Props) {
 }
 
 // Call the Sanity Fetch Function for the Photographer Information
-async function getAuthorBySlug(slug: string) {
-  // Fetch author data from Sanity
-  const author: Author = await sanityFetch({
-    query: queryAuthorBySlug,
-    params: { slug },
-    tags: ['author'],
-  });
-  return author;
+async function getAuthorBySlug(slug: string): Promise<Author | null> {
+  try {
+    // Fetch author data from Sanity
+    const author: Author = await sanityFetch({
+      query: queryAuthorBySlug,
+      params: { slug },
+      tags: ['author'],
+    });
+    return author;
+  } catch (error) {
+    console.error('Failed to fetch author:', error);
+    // Return null or a default author object if necessary
+    return null;
+  }
 }
 
 // Generate the static params for the author list
