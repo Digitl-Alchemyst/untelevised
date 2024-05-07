@@ -1,6 +1,6 @@
 /* eslint-disable react/function-component-definition */
 import { groq } from 'next-sanity';
-import { client } from '@/lib/sanity.client';
+import { client } from '@/lib/sanity/client';
 import ArticleCardLg from '@/components/cards/ArticleCardLg';
 
 type Props = {
@@ -27,7 +27,7 @@ export async function generateStaticParams() {
     slug
   }`;
 
-  const slugs: Post[] = await client.fetch(query);
+  const slugs: Article[] = await client.fetch(query);
   const slugRoutes = slugs ? slugs.map((slug) => slug.slug.current) : [];
 
   return slugRoutes.map((slug) => ({

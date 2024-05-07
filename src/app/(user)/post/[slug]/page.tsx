@@ -4,7 +4,7 @@ import { groq } from 'next-sanity';
 import { PortableText } from '@portabletext/react';
 import { RichTextComponents } from '@/c/RichTextComponents';
 import SocialShare from '@/c/SocialShare';
-import { client } from '@/l/sanity.client';
+import { client } from '@/l/sanity/client';
 import urlForImage from '@/u/urlForImage';
 import ClientSideRoute from '@/components/ClientSideRoute';
 // import Comments from '@/c/post/Comments';
@@ -25,7 +25,7 @@ export async function generateStaticParams() {
     slug
   }`;
 
-  const slugs: Post[] = await client.fetch(query);
+  const slugs: Article[] = await client.fetch(query);
   const slugRoutes = slugs ? slugs.map((slug) => slug.slug.current) : [];
 
   return slugRoutes.map((slug) => ({
@@ -46,7 +46,7 @@ async function Article({ params: { slug } }: Props) {
       ],
     }`;
 
-  const post: Post = await client.fetch(query, { slug });
+  const post: Article = await client.fetch(query, { slug });
 
   return (
     <>

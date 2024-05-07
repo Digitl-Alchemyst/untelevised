@@ -29,7 +29,7 @@ interface KeyEvent extends Base {
   description: Block[];
 }
 
-interface Post extends Base {
+interface Article extends Base {
   author: Author;
   body: Block[];
   categories: Category[];
@@ -53,6 +53,7 @@ interface Author extends Base {
   slug: Slug;
 }
 
+
 interface Image {
   _type: 'image';
   asset: Reference;
@@ -68,7 +69,7 @@ interface Slug {
   current: string;
 }
 
-interface Block {
+interface Block extends React.ReactNode {
   _key: string;
   _type: 'block';
   children: Span[];

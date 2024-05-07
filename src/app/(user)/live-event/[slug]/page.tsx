@@ -4,7 +4,7 @@ import { groq } from 'next-sanity';
 import { PortableText } from '@portabletext/react';
 import { RichTextComponents } from '@/c/RichTextComponents';
 import SocialShare from '@/c/SocialShare';
-import { client } from '@/l/sanity.client';
+import { client } from '@/l/sanity/client';
 import urlForImage from '@/u/urlForImage';
 import Link from 'next/link';
 import EventMap from '@/components/EventMap';
@@ -24,7 +24,7 @@ export async function generateStaticParams() {
     slug
   }`;
 
-  const slugs: Post[] = await client.fetch(query);
+  const slugs: Article[] = await client.fetch(query);
   const slugRoutes = slugs ? slugs.map((slug) => slug.slug.current) : [];
 
   return slugRoutes.map((slug) => ({
@@ -52,21 +52,29 @@ async function Article({ params: { slug } }: Props) {
   const liveEvent: LiveEvent = await client.fetch(query, { slug });
 
   // Combine relatedArticles and keyEvent into a single array
-  const relatedArticles = liveEvent.relatedArticles || [];
-  const keyEvent = liveEvent.keyEvent || [];
-  const allEvents = [...relatedArticles, ...keyEvent];
+  // const relatedArticles = liveEvent.relatedArticles || [];
+  // const keyEvent = liveEvent.keyEvent || [];
+  const allEvents = [
+    ...liveEvent.relatedArticles.map((article) => ({
+      ...article,
+      source: 'relatedArticles',
+    })),
+    ...liveEvent.keyEvent.map((event) => ({
+      ...event,
+      source: 'keyEvent',
+    })),
+  ];
 
-  // Sort the combined array by date and time in descending order
   allEvents.sort((a, b) => {
     const dateA = new Date(a.eventDate);
     const dateB = new Date(b.eventDate);
 
     if (isNaN(dateA.getTime())) {
-      return 1; // dateA is not a valid date, move it to the end
+      return 1;
     } else if (isNaN(dateB.getTime())) {
-      return -1; // dateB is not a valid date, move it to the end
+      return -1;
     } else {
-      return dateB.valueOf() - dateA.valueOf();
+      return dateB.getTime() - dateA.getTime();
     }
   });
 
@@ -170,7 +178,7 @@ async function Article({ params: { slug } }: Props) {
               <ul>
                 {allEvents.map((event) => (
                   <li
-                    key={event.slug}
+                    key={event.slug.current}
                     className='mb-3 flex flex-col rounded-lg border border-untele bg-slate-700/30 px-6 py-3'
                   >
                     <div className='flex flex-col space-y-1'>
@@ -180,24 +188,26 @@ async function Article({ params: { slug } }: Props) {
                       <h4 className='text-sm text-untele/70'>
                         {calculateTimeDifference(event.eventDate)}
                       </h4>
-                      {liveEvent.relatedArticles?.includes(event) ? (
-                        <p className='text-sm'>{event.description}</p>
+                      {event.source === 'relatedArticles' ? (
+                        <>
+                          <PortableText
+                            value={event.description as Block[]}
+                            components={RichTextComponents}
+                          />
+                          <Link
+                            href={`/post/${event.slug.current}`}
+                            className='cursor-pointer self-end text-blue-500 underline hover:opacity-80'
+                          >
+                            <button className='rounded-md border border-untele/40 bg-slate-700/30 px-3 py-1 font-bold text-untele/60'>
+                              Read More
+                            </button>
+                          </Link>
+                        </>
                       ) : (
                         <PortableText
-                          value={event.description}
+                          value={event.description as Block[]}
                           components={RichTextComponents}
                         />
-                      )}
-
-                      {liveEvent.relatedArticles?.includes(event) && (
-                        <Link
-                          href={`/post/${event.slug.current}`}
-                          className='cursor-pointer self-end text-blue-500 underline hover:opacity-80'
-                        >
-                          <button className='rounded-md border border-untele/40 bg-slate-700/30 px-3 py-1 font-bold text-untele/60'>
-                            Read More
-                          </button>
-                        </Link>
                       )}
                     </div>
                   </li>

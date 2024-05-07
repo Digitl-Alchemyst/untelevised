@@ -6,7 +6,7 @@ import { ArrowUpRightIcon, ShareIcon } from '@heroicons/react/24/solid';
 import ClientSideRoute from '../ClientSideRoute';
 
 type Props = {
-  posts: Post[];
+  posts: Article[];
 };
 
 function ArticleCardLg({ posts }: Props) {

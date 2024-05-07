@@ -1,6 +1,7 @@
+/* eslint-disable react/function-component-definition */
 import Link from 'next/link';
 import { groq } from 'next-sanity';
-import { client } from '@/lib/sanity.client';
+import { client } from '@/lib/sanity/client';
 import {
   FaYoutube,
   FaTwitch,

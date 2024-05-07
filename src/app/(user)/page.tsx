@@ -2,7 +2,7 @@
 import { draftMode } from 'next/headers';
 import Link from 'next/link';
 import { groq } from 'next-sanity';
-import { client } from '@/lib/sanity.client';
+import { client } from '@/lib/sanity/client';
 import ArticleCardLg from '@/components/cards/ArticleCardLg';
 import LiveWidget from '@/components/cards/LiveWidget';
 import { Analytics } from '@vercel/analytics/react';

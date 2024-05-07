@@ -1,6 +1,7 @@
+/* eslint-disable react/function-component-definition */
 import Image from 'next/image';
 import { groq } from 'next-sanity';
-import { client } from '@/l/sanity.client';
+import { client } from '@/l/sanity/client';
 import urlForImage from '@/u/urlForImage';
 import ClientSideRoute from '@/components/ClientSideRoute';
 

@@ -1,6 +1,7 @@
+/* eslint-disable react/function-component-definition */
 import React from 'react';
 import { groq } from 'next-sanity';
-import { client } from '@/lib/sanity.client';
+import { client } from '@/lib/sanity/client';
 import ClientSideRoute from '../ClientSideRoute';
 
 const queryCategory = groq`

@@ -1,9 +1,10 @@
+/* eslint-disable react/function-component-definition */
 /* eslint-disable import/prefer-default-export */
 import Image from 'next/image';
 import { groq } from 'next-sanity';
 import { PortableText } from '@portabletext/react';
 import { RichTextComponents } from '@/c/RichTextComponents';
-import { client } from '@/l/sanity.client';
+import { client } from '@/l/sanity/client';
 import urlForImage from '@/u/urlForImage';
 import {
   FaEnvelope,
@@ -164,8 +165,8 @@ async function Author({ params: { slug } }: Props) {
         </h1>
         <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 '>
           {posts
-            .filter((post: Post) => post.author?.slug.current === slug) // Filter by author slug
-            .map((post: Post) => {
+            .filter((post: Article) => post.author?.slug.current === slug) // Filter by author slug
+            .map((post: Article) => {
               const date = new Date(post._createdAt);
               const formattedDate = date.toLocaleDateString('en-US', {
                 month: 'long',

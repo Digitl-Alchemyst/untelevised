@@ -4,11 +4,9 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Header from '@/c/global/Header';
 import Banner from '@/c/global/Banner';
-import dynamic from 'next/dynamic';
 import { draftMode } from 'next/headers';
-import { token } from '@/l/sanity.fetch';
 // import GATag from '@/l/googleAnalytics';
-import GASVerify from '@/lib/googleAdSense';
+import GASVerify from '@/lib/util/googleAdSense';
 import Script from 'next/script';
 import Nav from '@/components/global/Nav';
 import Footer from '@/components/global/Footer';
@@ -57,7 +55,7 @@ export const metadata: Metadata = {
   },
 };
 
-const PreviewProvider = dynamic(() => import('@/components/PreviewProvider'));
+
 
 const GTM_ID = process.env.GTM_ID;
 
@@ -84,12 +82,15 @@ export default async function RootLayout({
       )}
       <body className={`bg-slate-400/70 scrollbar-hide ${inter.className}`}>
         {draftMode().isEnabled ? (
-          <PreviewProvider token={token}>
-            <Header />
-            <Nav />
-            <Banner />
-            {children}
-          </PreviewProvider>
+
+                      <>
+                      <Header />
+                      <Nav />                      
+                      {children}
+                      <Banner />
+                      <Footer />
+                      </>
+
         ) : (
           <>
             {process.env.NODE_ENV === 'production' && (

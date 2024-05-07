@@ -1,6 +1,6 @@
 // getAllNews.ts
 import { groq } from 'next-sanity';
-import { client } from '@/l/sanity.client';
+import { client } from '@/l/sanity/client';
 
 export default async function getAllNews() {
   const postQuery = groq`

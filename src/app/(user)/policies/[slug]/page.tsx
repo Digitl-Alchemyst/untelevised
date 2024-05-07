@@ -1,8 +1,9 @@
+/* eslint-disable react/function-component-definition */
 /* eslint-disable import/prefer-default-export */
 import { groq } from 'next-sanity';
 import { PortableText } from '@portabletext/react';
 import { RichTextComponents } from '@/c/RichTextComponents';
-import { client } from '@/l/sanity.client';
+import { client } from '@/l/sanity/client';
 
 type Props = {
   params: {
