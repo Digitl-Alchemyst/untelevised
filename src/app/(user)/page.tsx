@@ -1,5 +1,4 @@
 /* eslint-disable react/function-component-definition */
-// import { groq } from 'next-sanity';
 import ArticleCardLg from '@/components/cards/ArticleCardLg';
 import LiveWidget from '@/components/cards/LiveWidget';
 import { Analytics } from '@vercel/analytics/react';
@@ -7,8 +6,6 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import ClientSideRoute from '@/components/ClientSideRoute';
 import { queryAllPost, queryLiveEvents } from '@/lib/sanity/queries';
 import sanityFetch from '@/lib/sanity/fetch';
-
-export const revalidate = 12;
 
 export default async function HomePage() {
   const frontPageNews = await getFrontPageNews();
@@ -36,15 +33,16 @@ export default async function HomePage() {
   );
 };
 
-// Call the Sanity Fetch Function for the Article by Slug
+// Call the Sanity Fetch Function for the Front Page News
 async function getFrontPageNews() {
   try {
-    // Fetch live event data from Sanity
+    // Fetch live event data from Sanity for only Live Events isCurrentEvent = ture
     const liveEvents: LiveEvent[] = await sanityFetch({
       query: queryLiveEvents,
       tags: ['liveEvent'],
     });
-    // Fetch article data from Sanity for posts
+    
+    // Fetch article data from Sanity for all articles
     const posts: Article[] = await sanityFetch({
       query: queryAllPost,
       tags: ['post'],
@@ -54,6 +52,6 @@ async function getFrontPageNews() {
     return { liveEvents, posts };
   } catch (error) {
     console.log('Failed to fetch article:', error);
-    return { posts: null, liveEvents: null }; // Return empty arrays in case of error
+    return { posts: [] || null, liveEvents: [] || null }; // Return empty arrays or null in case of error
   }
 }

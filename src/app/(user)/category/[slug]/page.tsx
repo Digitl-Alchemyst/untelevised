@@ -34,9 +34,10 @@ export default async function CategoryPage({ params: { slug } }: Props) {
   );
 }
 
+// Call the Sanity Fetch Function for the Article Information Filtered by Category
 async function getArticlesByCategory(slug: string): Promise<Article[] | null> {
   try {
-    // Fetch author data from Sanity
+    // Fetch article data by category from Sanity
     const articles: Article[] = await sanityFetch({
       query: queryArticleByCategory,
       params: { slug },
@@ -45,14 +46,13 @@ async function getArticlesByCategory(slug: string): Promise<Article[] | null> {
     return articles;
   } catch (error) {
     console.error('Failed to fetch author:', error);
-    // Return null or a default author object if necessary
-    return null;
+    return [] || null;
   }
 }
 // Generate the static params for the category list
 export async function generateStaticParams() {
   const query = groq`*[_type=='category'] { slug }`;
-  const slugs: Article[] = await client.fetch(query);
+  const slugs: Category[] = await client.fetch(query);
   const slugRoutes = slugs ? slugs.map((slug) => slug.slug.current) : [];  
   return slugRoutes.map((slug) => ({
     slug,

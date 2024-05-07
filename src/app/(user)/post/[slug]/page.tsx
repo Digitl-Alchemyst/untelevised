@@ -24,7 +24,6 @@ type Props = {
 export const revalidate = 10;
 export default async function Article({ params: { slug } }: Props) {
   const article: Article = await getArticleBySlug(slug) as Article;
-  // console.log("🚀 ~ Article ~ article:", article)
 
   return (
     <>
@@ -146,11 +145,10 @@ async function getArticleBySlug(slug: string) {
       params: { slug },
       tags: ['post'],
     });
-
     return post || [];
   } catch (error) {
     console.log('Failed to fetch article:', error);
-    return [];
+    return [] || null;
   }
 }
 

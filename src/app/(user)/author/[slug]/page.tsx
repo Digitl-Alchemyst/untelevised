@@ -16,8 +16,6 @@ type Props = {
   };
 };
 
-export const revalidate = 15;
-
 export default async function Author({ params: { slug } }: Props) {
   const author = await getAuthorBySlug(slug);
 
@@ -73,7 +71,7 @@ export default async function Author({ params: { slug } }: Props) {
   );
 }
 
-// Call the Sanity Fetch Function for the Photographer Information
+// Call the Sanity Fetch Function for the Author Information
 async function getAuthorBySlug(slug: string): Promise<Author | null> {
   try {
     // Fetch author data from Sanity
@@ -84,8 +82,7 @@ async function getAuthorBySlug(slug: string): Promise<Author | null> {
     });
     return author;
   } catch (error) {
-    console.error('Failed to fetch author:', error);
-    // Return null or a default author object if necessary
+    console.error('Failed to fetch author:', error);    
     return null;
   }
 }
