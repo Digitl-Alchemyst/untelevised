@@ -3,16 +3,12 @@ import ClientSideRoute from '../ClientSideRoute';
 import Image from 'next/image';
 import urlForImage from '@/u/urlForImage';
 import getTimeSinceEvent from '@/lib/util/getTimeSinceEvent';
+import resolveHref from '@/lib/util/resolveHref';
+import formatDate from '@/lib/util/formatDate';
 
 type Props = {
   liveEvents: LiveEvent[];
 };
-
-export const revalidate = 15;
-
-
-
-
 
 const LiveWidget = ({ liveEvents }: Props) => {
   // Check if liveEvents has any items and return nothing if empty
@@ -47,7 +43,9 @@ const LiveWidget = ({ liveEvents }: Props) => {
               {/* Read More  */}
               <div className='flex w-full justify-center lg:justify-start'>
                 <ClientSideRoute
-                  route={`/live-event/${liveEvent.slug?.current}`}
+                  route={
+                    resolveHref('liveevent', liveEvent.slug?.current) || ''
+                  }
                   key={liveEvent._id}
                 >
                   <button className='mt-6 rounded-lg border border-slate-800/70 bg-untele p-6 py-3 text-slate-200 shadow-md lg:mb-8 lg:ml-4 lg:mt-2'>
@@ -69,13 +67,9 @@ const LiveWidget = ({ liveEvents }: Props) => {
                 <h1 className='text-xl font-bold'>{liveEvent.title}</h1>
 
                 <div>
-                  {/* <h3>{liveEvent.location}</h3> */}
+                  {liveEvent.location && <h3>{liveEvent.location}</h3>}
                   <p>
-                    {new Date(liveEvent.eventDate).toLocaleDateString('en-US', {
-                      day: 'numeric',
-                      month: 'long',
-                      year: 'numeric',
-                    })}
+                    {formatDate(liveEvent.eventDate || liveEvent._createdAt)}
                   </p>
                 </div>
               </div>

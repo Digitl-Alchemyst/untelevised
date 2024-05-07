@@ -11,7 +11,7 @@ const pageRoutes: PageRoutes = {
   home: { path: '/' },
   post: { path: '/post/:slug' },
   category: { path: '/category/:slug' },
-  gallery: { path: '/gallery/:slug' },
+  liveevent: { path: '/live-event/:slug' },
   gallerycategory: { path: '/gallerycategory/:slug' },
   author: { path: '/author/:slug' },
 };

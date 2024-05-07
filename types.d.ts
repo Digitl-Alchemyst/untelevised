@@ -15,6 +15,7 @@ interface LiveEvent extends Base {
   title: string;
   videoLink: string;
   description: string;
+  location: string;
   subtitle: string;
   keywords: string;
   slug: Slug;

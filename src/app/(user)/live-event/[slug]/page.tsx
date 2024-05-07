@@ -25,12 +25,14 @@ async function Article({ params: { slug } }: Props) {
   const liveEvent: LiveEvent = (await getEventBySlug(slug)) as LiveEvent;
 
   const allEvents = [
+    // Check if liveEvent.relatedArticles is an array. If Truthy map over it and return an array of objects with the source property set to the source of the related article.
     ...(Array.isArray(liveEvent.relatedArticles)
       ? liveEvent.relatedArticles.map((article) => ({
           ...article,
           source: 'relatedArticles',
         }))
       : []),
+      // Check if liveEvent.keyEvent is an array. If Truthy map over it and return an array of objects with the source property set to the source of the key event.
     ...(Array.isArray(liveEvent.keyEvent)
       ? liveEvent.keyEvent.map((event) => ({
           ...event,
@@ -55,7 +57,6 @@ async function Article({ params: { slug } }: Props) {
   return (
     <>
       <hr className='mx-auto mb-8 max-w-[95wv] border-untele md:max-w-[85vw]' />
-
       <article className='mx-auto max-w-[95vw] pb-28 md:max-w-[85vw] lg:px-10'>
         {/* Top Section: Image, Title, Date, Description  */}
         <section className='flex flex-col space-x-4 text-slate-700 lg:flex-row'>
@@ -201,7 +202,6 @@ export async function generateStaticParams() {
   const query = groq`*[_type=='liveEvent'] { slug }`;
   const slugs: LiveEvent[] = await client.fetch(query);
   const slugRoutes = slugs ? slugs.map((slug) => slug.slug.current) : [];
-
   return slugRoutes.map((slug) => ({
     slug,
   }));
