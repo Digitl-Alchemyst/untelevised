@@ -76,5 +76,4 @@ export default async function HomePage() {
       <SpeedInsights />
     </div>
   );
-}
-;
+};

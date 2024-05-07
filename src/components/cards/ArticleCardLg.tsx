@@ -33,7 +33,7 @@ function ArticleCardLg({ post }: Props) {
                 </div>
               ))
             ) : (
-              <div>No categories</div> // Display a message if categories are empty or null
+              null // Display nothing if no category for article
             )}
           </div>
         </div>
