@@ -1,38 +1,17 @@
+/* eslint-disable react/function-component-definition */
 import React from 'react';
-import ClientSideRoute from '../ClientSideRoute';
+import ClientSideRoute from '../providers/ClientSideRoute';
 import Image from 'next/image';
 import urlForImage from '@/u/urlForImage';
+import getTimeSinceEvent from '@/lib/util/getTimeSinceEvent';
+import resolveHref from '@/lib/util/resolveHref';
+import formatDate from '@/lib/util/formatDate';
 
 type Props = {
   liveEvents: LiveEvent[];
 };
 
-export const revalidate = 15;
-
-// A Function to calculate the difference between the current time and eventTime set from the Database.
-function calculateTimeDifference(eventDate: string) {
-  const eventTime = new Date(eventDate).getTime();
-  const currentTime = new Date().getTime();
-
-  const timeDifference = currentTime - eventTime;
-
-  const seconds = Math.floor(timeDifference / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-
-  if (days > 0) {
-    return `${days} day${days > 1 ? 's' : ''} ago`;
-  } else if (hours > 0) {
-    return `${hours} hour${hours > 1 ? 's' : ''} ago`;
-  } else if (minutes > 0) {
-    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
-  } else {
-    return `${seconds} second${seconds !== 1 ? 's' : ''} ago`;
-  }
-}
-
-const LiveWidget = ({ liveEvents }: Props) => {
+export default function LiveWidget({ liveEvents }: Props) {
   // Check if liveEvents has any items and return nothing if empty
   if (liveEvents.length === 0) {
     return;
@@ -55,7 +34,7 @@ const LiveWidget = ({ liveEvents }: Props) => {
                 {liveEvent.mainImage && (
                   <Image
                     className='rounded-md object-cover object-left lg:object-center'
-                    src={urlForImage(liveEvent.mainImage).url()}
+                    src={urlForImage(liveEvent.mainImage as any)?.url() || ''}
                     fill
                     alt='Post Main Image'
                   />
@@ -65,7 +44,9 @@ const LiveWidget = ({ liveEvents }: Props) => {
               {/* Read More  */}
               <div className='flex w-full justify-center lg:justify-start'>
                 <ClientSideRoute
-                  route={`/live-event/${liveEvent.slug?.current}`}
+                  route={
+                    resolveHref('liveevent', liveEvent.slug?.current) || ''
+                  }
                   key={liveEvent._id}
                 >
                   <button className='mt-6 rounded-lg border border-slate-800/70 bg-untele p-6 py-3 text-slate-200 shadow-md lg:mb-8 lg:ml-4 lg:mt-2'>
@@ -87,13 +68,9 @@ const LiveWidget = ({ liveEvents }: Props) => {
                 <h1 className='text-xl font-bold'>{liveEvent.title}</h1>
 
                 <div>
-                  {/* <h3>{liveEvent.location}</h3> */}
+                  {liveEvent.location && <h3>{liveEvent.location}</h3>}
                   <p>
-                    {new Date(liveEvent.eventDate).toLocaleDateString('en-US', {
-                      day: 'numeric',
-                      month: 'long',
-                      year: 'numeric',
-                    })}
+                    {formatDate(liveEvent.eventDate || liveEvent._createdAt)}
                   </p>
                 </div>
               </div>
@@ -128,7 +105,7 @@ const LiveWidget = ({ liveEvents }: Props) => {
                       >
                         {event.title} -{' '}
                         <span className='relative -top-[1px] transform text-sm font-light text-untele'>
-                          {calculateTimeDifference(event.eventDate)}
+                          {getTimeSinceEvent(event.eventDate)}
                         </span>
                       </li>
                     ))}
@@ -145,6 +122,4 @@ const LiveWidget = ({ liveEvents }: Props) => {
       </div>
     </div>
   );
-};
-
-export default LiveWidget;
+}

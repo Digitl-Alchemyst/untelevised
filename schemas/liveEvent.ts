@@ -20,6 +20,11 @@ export default defineType({
       type: 'string',
     }),
     defineField({
+      name: 'location',
+      title: 'Location',
+      type: 'string',
+    }),
+    defineField({
       name: 'isCurrentEvent',
       title: 'Is Current Event',
       type: 'boolean', // Adding a boolean field for isCurrentEvent

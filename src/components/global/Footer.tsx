@@ -1,6 +1,5 @@
+/* eslint-disable react/function-component-definition */
 import Link from 'next/link';
-import { groq } from 'next-sanity';
-import { client } from '@/lib/sanity.client';
 import {
   FaYoutube,
   FaTwitch,
@@ -14,46 +13,18 @@ import {
 import { FaThreads } from 'react-icons/fa6';
 import { MdLiveTv } from 'react-icons/md';
 import { RiKickLine } from 'react-icons/ri';
-import ClientSideRoute from '../ClientSideRoute';
-
-const categoryQuery = groq`
-  *[_type == "category"] {
-    _id,
-    title,
-    order
-  }  
-`;
-
-const policyQuery = groq`
-  *[_type == "policies"] {
-    _id,
-    title,
-    order
-  }  
-`;
+import ClientSideRoute from '../providers/ClientSideRoute';
+import sanityFetch from '@/lib/sanity/fetch';
+import { queryCategories, queryPoliciesList } from '@/lib/sanity/queries';
+import resolveHref from '@/lib/util/resolveHref';
+import formatTitleForURL from '@/lib/util/formatTitleForURL';
 
 async function Footer() {
-  const categories: any = await client.fetch(categoryQuery);
-  const formatCategoryTitle = (title) => {
-    // Convert to lowercase
-    let formattedTitle = title.toLowerCase();
+  const categories: any = await getNewsCategories();
+  const sortedCategories = categories.sort((a, b) => a.order - b.order);
 
-    // Remove symbols and spaces, and replace them with a dash
-    formattedTitle = formattedTitle.replace(/[^a-z0-9]+/g, '-');
-
-    return formattedTitle;
-  };
-
-  const policies: any = await client.fetch(policyQuery);
-  const formatPolicyTitle = (title) => {
-    // Convert to lowercase
-    let formattedName = title.toLowerCase();
-
-    // Remove symbols and spaces, and replace them with a dash
-    formattedName = formattedName.replace(/[^a-z0-9]+/g, '-');
-
-    return formattedName;
-  };
+  const policies: any = await getPoliciesList();
+  const sortedPolicies = policies.sort((a, b) => a.order - b.order);
 
   return (
     <div className='flex flex-col space-y-10 bg-slate-600 px-2 py-3'>
@@ -66,11 +37,14 @@ async function Footer() {
           <h4 className='hidden pb-2 text-xl font-semibold text-slate-950 underline md:flex'>
             News Categories
           </h4>
-          {categories
-            .sort((a, b) => a.order - b.order)
+          {sortedCategories
+            // .sort((a, b) => a.order - b.order)
             .map((category) => (
               <ClientSideRoute
-                route={`/category/${formatCategoryTitle(category.title)}`}
+                route={
+                  resolveHref('category', formatTitleForURL(category.title)) ||
+                  ''
+                }
                 key={category._id}
               >
                 {category.title}
@@ -198,16 +172,16 @@ async function Footer() {
           <h4 className='hidden pb-2 text-xl font-semibold text-slate-950 underline md:flex'>
             Policies
           </h4>
-          {policies
-            .sort((a, b) => a.order - b.order)
-            .map((policy) => (
-              <ClientSideRoute
-                route={`/policies/${formatPolicyTitle(policy.title)}`}
-                key={policy._id}
-              >
-                {policy.title}
-              </ClientSideRoute>
-            ))}
+          {sortedPolicies.map((policy) => (
+            <ClientSideRoute
+              route={
+                resolveHref('policies', formatTitleForURL(policy.title)) || ''
+              }
+              key={policy._id}
+            >
+              {policy.title}
+            </ClientSideRoute>
+          ))}
         </div>
 
         {/* About */}
@@ -253,3 +227,33 @@ async function Footer() {
 }
 
 export default Footer;
+
+// Call the Sanity Fetch Function for a list of All Authors
+async function getPoliciesList() {
+  try {
+    // Fetch author data from Sanity
+    const policies = await sanityFetch({
+      query: queryPoliciesList,
+      tags: ['author'],
+    });
+    return policies;
+  } catch (error) {
+    console.error('Failed to fetch author:', error);
+    return null;
+  }
+}
+
+// Call the Sanity Fetch Function for a list of All Authors
+async function getNewsCategories() {
+  try {
+    // Fetch author data from Sanity
+    const categories = await sanityFetch({
+      query: queryCategories,
+      tags: ['author'],
+    });
+    return categories;
+  } catch (error) {
+    console.error('Failed to fetch author:', error);
+    return null;
+  }
+}

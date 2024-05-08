@@ -2,13 +2,18 @@
 import Image from 'next/image';
 import { groq } from 'next-sanity';
 import { PortableText } from '@portabletext/react';
-import { RichTextComponents } from '@/c/RichTextComponents';
-import SocialShare from '@/c/SocialShare';
-import { client } from '@/l/sanity.client';
+import { RichTextComponents } from '@/components/providers/RichTextComponents';
+import SocialShare from '@/components/global/SocialShare';
+import { client } from '@/l/sanity/client';
 import urlForImage from '@/u/urlForImage';
-import Link from 'next/link';
-import EventMap from '@/components/EventMap';
-export { generateMetadata } from '@/util/generateLiveEventMetadata';
+import EventMap from '@/components/post/EventMap';
+import formatDate from '@/lib/util/formatDate';
+import { queryEventBySlug } from '@/lib/sanity/queries';
+import sanityFetch from '@/lib/sanity/fetch';
+import getTimeSinceEvent from '@/lib/util/getTimeSinceEvent';
+import ClientSideRoute from '@/components/providers/ClientSideRoute';
+import resolveHref from '@/lib/util/resolveHref';
+// export { generateMetadata } from '@/util/generateLiveEventMetadata';
 
 type Props = {
   params: {
@@ -16,91 +21,47 @@ type Props = {
   };
 };
 
-export const revalidate = 15;
+export default async function LiveEvent({ params: { slug } }: Props) {
+  const liveEvent: LiveEvent = (await getEventBySlug(slug)) as LiveEvent;
 
-export async function generateStaticParams() {
-  const query = groq`*[_type=='liveEvent']
-  {
-    slug
-  }`;
+  const allEvents = [
+    // Check if liveEvent.relatedArticles is an array. If Truthy map over it and return an array of objects with the source property set to the source of the related article.
+    ...(Array.isArray(liveEvent.relatedArticles)
+      ? liveEvent.relatedArticles.map((article) => ({
+          ...article,
+          source: 'relatedArticles',
+        }))
+      : []),
+    // Check if liveEvent.keyEvent is an array. If Truthy map over it and return an array of objects with the source property set to the source of the key event.
+    ...(Array.isArray(liveEvent.keyEvent)
+      ? liveEvent.keyEvent.map((event) => ({
+          ...event,
+          source: 'keyEvent',
+        }))
+      : []),
+  ];
 
-  const slugs: Post[] = await client.fetch(query);
-  const slugRoutes = slugs ? slugs.map((slug) => slug.slug.current) : [];
-
-  return slugRoutes.map((slug) => ({
-    slug,
-  }));
-}
-
-async function Article({ params: { slug } }: Props) {
-  const query = groq`
-    *[_type == "liveEvent" && slug.current == $slug][0] {
-      ...,
-      tag[]->,
-      keyEvent[]->,
-      relatedArticles[]-> {
-        slug,
-        _id,
-        title,
-        _createdAt,
-        description,
-        eventDate,
-      // Add other fields you want to retrieve from relatedArticles
-    }
-    }`;
-
-  const liveEvent: LiveEvent = await client.fetch(query, { slug });
-
-  // Combine relatedArticles and keyEvent into a single array
-  const relatedArticles = liveEvent.relatedArticles || [];
-  const keyEvent = liveEvent.keyEvent || [];
-  const allEvents = [...relatedArticles, ...keyEvent];
-
-  // Sort the combined array by date and time in descending order
+  // Sort the allEvents array based on the eventDate property
   allEvents.sort((a, b) => {
-    const dateA = new Date(a.eventDate);
-    const dateB = new Date(b.eventDate);
-
-    if (isNaN(dateA.getTime())) {
-      return 1; // dateA is not a valid date, move it to the end
-    } else if (isNaN(dateB.getTime())) {
-      return -1; // dateB is not a valid date, move it to the end
-    } else {
-      return dateB.valueOf() - dateA.valueOf();
+    // Check if either eventDate is not a valid date
+    if (isNaN(Date.parse(a.eventDate)) || isNaN(Date.parse(b.eventDate))) {
+      // If both dates are invalid, return 0 to indicate no change in order. This prevents sorting based on invalid dates
+      return 0;
     }
+    // Compare the eventDate strings directly to determine the order
+    return a.eventDate > b.eventDate ? -1 : a.eventDate < b.eventDate ? 1 : 0;
   });
 
-  function calculateTimeDifference(eventDate) {
-    const eventTime = new Date(eventDate).getTime();
-    const currentTime = new Date().getTime();
-    const timeDifference = currentTime - eventTime;
-
-    const seconds = Math.floor(timeDifference / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-
-    if (days > 0) {
-      return `${days} day${days > 1 ? 's' : ''} ago`;
-    } else if (hours > 0) {
-      return `${hours} hour${hours > 1 ? 's' : ''} ago`;
-    } else if (minutes > 0) {
-      return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
-    } else {
-      return `${seconds} second${seconds !== 1 ? 's' : ''} ago`;
-    }
-  }
   return (
     <>
       <hr className='mx-auto mb-8 max-w-[95wv] border-untele md:max-w-[85vw]' />
-
       <article className='mx-auto max-w-[95vw] pb-28 md:max-w-[85vw] lg:px-10'>
         {/* Top Section: Image, Title, Date, Description  */}
         <section className='flex flex-col space-x-4 text-slate-700 lg:flex-row'>
           {/* Image  */}
           <div className='h-auto min-w-max xl:w-full'>
             <Image
-              src={urlForImage(liveEvent.mainImage).url()}
+              src={urlForImage(liveEvent.mainImage as any)?.url() || ''}
               alt='Image Description'
               style={{
                 width: '100%',
@@ -114,7 +75,7 @@ async function Article({ params: { slug } }: Props) {
 
           {/* Info Block  */}
           <div className='flex w-full flex-col space-y-2 py-2'>
-            {/* Title & Date    */}
+            {/* Title & Date */}
             <div className='flex w-full  flex-col space-y-1'>
               {liveEvent.isCurrentEvent && (
                 <h2 className='w-min animate-pulse rounded bg-untele px-3 py-1 text-2xl font-bold text-slate-200'>
@@ -123,15 +84,10 @@ async function Article({ params: { slug } }: Props) {
               )}
               <h1 className='w-full text-3xl font-bold'>{liveEvent.title}</h1>
 
+              {/* Location & Date  */}
               <div>
-                {/* <h3>{liveEvent.location}</h3> */}
-                <p>
-                  {new Date(liveEvent.eventDate).toLocaleDateString('en-US', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                  })}
-                </p>
+                <h3>{liveEvent.location}</h3>
+                <p>{formatDate(liveEvent.eventDate || liveEvent._createdAt)}</p>
               </div>
             </div>
             {/* Description  */}
@@ -170,7 +126,7 @@ async function Article({ params: { slug } }: Props) {
               <ul>
                 {allEvents.map((event) => (
                   <li
-                    key={event.slug}
+                    key={event._id}
                     className='mb-3 flex flex-col rounded-lg border border-untele bg-slate-700/30 px-6 py-3'
                   >
                     <div className='flex flex-col space-y-1'>
@@ -178,26 +134,26 @@ async function Article({ params: { slug } }: Props) {
                         {event.title}
                       </h3>
                       <h4 className='text-sm text-untele/70'>
-                        {calculateTimeDifference(event.eventDate)}
+                        {getTimeSinceEvent(event.eventDate)}
                       </h4>
-                      {liveEvent.relatedArticles?.includes(event) ? (
-                        <p className='text-sm'>{event.description}</p>
+                      {event.source === 'relatedArticles' ? (
+                        <>
+                          <p>{event.description as string}</p>
+                          <ClientSideRoute
+                            route={
+                              resolveHref('post', event.slug?.current) || ''
+                            }
+                          >
+                            <button className='cursor-pointer self-end rounded-md border border-untele/40 bg-slate-700/30 px-3 py-1 font-bold text-untele/60 underline hover:text-blue-700 hover:opacity-80'>
+                              Read More
+                            </button>
+                          </ClientSideRoute>
+                        </>
                       ) : (
                         <PortableText
-                          value={event.description}
+                          value={event.description as Block[]}
                           components={RichTextComponents}
                         />
-                      )}
-
-                      {liveEvent.relatedArticles?.includes(event) && (
-                        <Link
-                          href={`/post/${event.slug.current}`}
-                          className='cursor-pointer self-end text-blue-500 underline hover:opacity-80'
-                        >
-                          <button className='rounded-md border border-untele/40 bg-slate-700/30 px-3 py-1 font-bold text-untele/60'>
-                            Read More
-                          </button>
-                        </Link>
                       )}
                     </div>
                   </li>
@@ -222,4 +178,28 @@ async function Article({ params: { slug } }: Props) {
   );
 }
 
-export default Article;
+// Call the Sanity Fetch Function for the Article by Slug
+async function getEventBySlug(slug: string) {
+  try {
+    // Fetch article data from Sanity
+    const post = await sanityFetch({
+      query: queryEventBySlug,
+      params: { slug },
+      tags: ['post'],
+    });
+    return post || [];
+  } catch (error) {
+    console.log('Failed to fetch article:', error);
+    return [] || null;
+  }
+}
+
+// // Generate the static params for the list of Live Events
+export async function generateStaticParams() {
+  const query = groq`*[_type=='liveEvent'] { slug }`;
+  const slugs: LiveEvent[] = await client.fetch(query);
+  const slugRoutes = slugs ? slugs.map((slug) => slug.slug.current) : [];
+  return slugRoutes.map((slug) => ({
+    slug,
+  }));
+}

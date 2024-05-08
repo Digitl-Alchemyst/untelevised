@@ -1,6 +1,6 @@
 import React from 'react';
 import { groq } from 'next-sanity';
-import { client } from '@/lib/sanity.client';
+import { client } from '@/lib/sanity/client';
 
 const queryPost = groq`
   *[_type=='post'] {

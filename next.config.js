@@ -1,28 +1,41 @@
-// @ts-check
-
-/**
- * @type {import('next').NextConfig}
- **/
+/** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
+  swcMinify: true,
+  trailingSlash: true,
   images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'cdn.sanity.io',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'source.unsplash.com',
+      },
     ],
   },
-
+  // These could cause issue may remove
   typescript: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
-    // !! WARN !!
-    ignoreBuildErrors: true,
+    // Set this to false if you want production builds to abort if there's type errors
+    ignoreBuildErrors: process.env.VERCEL_ENV === 'production',
   },
-  reactStrictMode: true,
-  swcMinify: true,
-  trailingSlash: true,
+  eslint: {
+    /// Set this to false if you want production builds to abort if there's lint errors
+    ignoreDuringBuilds: process.env.VERCEL_ENV === 'production',
+  },
+  logging: {
+    fetches: {
+      fullUrl: false,
+    },
+  },
+  experimental: {
+    taint: true,
+  },
 };
 
 module.exports = nextConfig;

@@ -77,6 +77,11 @@ export default defineType({
       type: 'datetime',
     }),
     defineField({
+      name: 'location',
+      title: 'Location',
+      type: 'string',
+    }),
+    defineField({
       name: 'body',
       title: 'Body',
       type: 'blockContent',

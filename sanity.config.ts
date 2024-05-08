@@ -1,33 +1,47 @@
 import { defineConfig } from 'sanity';
+import { structureTool } from 'sanity/structure';
 import { visionTool } from '@sanity/vision';
-import { deskTool } from 'sanity/desk';
+import { presentationTool } from 'sanity/presentation';
 import { schemaTypes } from './schemas';
-import { myTheme } from '#/theme';
-import StudioNavbar from '@/components/studio/StudioNavbar';
-import Logo from '@/components/global/Logo';
-import { getDefaultDocumentNode } from '#/structure';
+import {
+  apiVersion,
+  dataset,
+  projectId,
+  studioUrl,
+  title,
+} from '@/lib/sanity/api';
+import { myTheme } from '@/lib/sanity/theme';
+import StudioNavbar from '@/c/studio/StudioNavbar';
 
-const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!;
-const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET!;
 
 export default defineConfig({
-  basePath: '/studio',
+  basePath: studioUrl,
+
   name: 'UnTelevised_CMS_Studio',
-  title: 'UnTelevised Studio',
-  projectId,
-  dataset,
+  title: title,
+
+  projectId: projectId,
+  dataset: dataset,
+  apiVersion: apiVersion,
+
   plugins: [
-    deskTool({
-      defaultDocumentNode: getDefaultDocumentNode,
+    structureTool({}),
+    presentationTool({
+      previewUrl: {
+        draftMode: {
+          enable: '/api/draft',
+        },
+      },
     }),
     visionTool({}),
   ],
+
   schema: {
     types: schemaTypes,
   },
   studio: {
     components: {
-      logo: Logo,
+
       navbar: StudioNavbar,
     },
   },

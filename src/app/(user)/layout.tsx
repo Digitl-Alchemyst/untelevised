@@ -4,15 +4,15 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Header from '@/c/global/Header';
 import Banner from '@/c/global/Banner';
-import dynamic from 'next/dynamic';
 import { draftMode } from 'next/headers';
-import { token } from '@/l/sanity.fetch';
 // import GATag from '@/l/googleAnalytics';
-import GASVerify from '@/lib/googleAdSense';
+import GASVerify from '@/lib/util/googleAdSense';
 import Script from 'next/script';
 import Nav from '@/components/global/Nav';
 import Footer from '@/components/global/Footer';
 import { GoogleAdSense } from 'next-google-adsense';
+import { VisualEditing } from 'next-sanity';
+
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
   },
 };
 
-const PreviewProvider = dynamic(() => import('@/components/PreviewProvider'));
+
 
 const GTM_ID = process.env.GTM_ID;
 
@@ -83,27 +83,27 @@ export default async function RootLayout({
         </>
       )}
       <body className={`bg-slate-400/70 scrollbar-hide ${inter.className}`}>
-        {draftMode().isEnabled ? (
-          <PreviewProvider token={token}>
-            <Header />
-            <Nav />
-            <Banner />
-            {children}
-          </PreviewProvider>
-        ) : (
-          <>
-            {process.env.NODE_ENV === 'production' && (
-              <>
-                <GoogleAdSense />
-              </>
-            )}
-            <Header />
-            <Nav />
-            <Banner />
-            {children}
-            <Footer />
-          </>
-        )}
+        <>
+          {process.env.NODE_ENV === 'production' && (
+            <>
+              <GoogleAdSense />
+            </>
+          )}
+          <Header />
+          <Nav />
+          <Banner />
+          {draftMode().isEnabled && (
+            <div>
+              <a className='block bg-blue-300 p-4' href='/api/disable-draft'>
+                Disable preview mode
+              </a>
+            </div>
+          )}
+          {children}
+          {draftMode().isEnabled && <VisualEditing />}
+          <Footer />
+        </>
+
         {process.env.NODE_ENV === 'production' && (
           <>
             <noscript

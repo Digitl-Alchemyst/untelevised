@@ -14,6 +14,7 @@
 - [ ] Add search functionality
 - [ ] Design a responsive layout
 - [ ] Comments Section on Articles
+- [ ] Add Ticker Headline Schema 
 
 ### Bugs
 
@@ -21,3 +22,4 @@
 
 - [ ] Refactor the database connection logic
 - [ ] Optimize the data retrieval process
+- [ ] Authors Page refactor related articles to filter with groq query

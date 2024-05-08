@@ -1,18 +1,14 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
-const Logo = (props: any) => {
-  const { renderDefault, title } = props;
+const Logo = () => {  
   return (
-    <div className='flex items-center space-x-2'>
-      <Image
-        src='/Logo.png'
-        width={40}
-        height={40}
-        alt={title}
-        className='object-cover'
-      />
-      {renderDefault && <>{renderDefault(props)}</>}
-    </div>
+    <Link href='/' className='flex items-end space-x-2'>
+      <Image src='/Logo.png' alt='' width={50} height={50} />
+      <h1 className='hidden text-2xl font-semibold text-slate-200 lg:flex'>
+        UnTelevised Media
+      </h1>
+    </Link>
   );
 };
 

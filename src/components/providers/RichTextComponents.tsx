@@ -3,7 +3,7 @@
 /* eslint-disable react/function-component-definition */
 import Image from 'next/image';
 import Link from 'next/link';
-import urlForImage from '@/util/urlForImage';
+import urlForImage from '@/u/urlForImage';
 import { Tweet } from 'react-tweet';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -17,7 +17,7 @@ export const RichTextComponents = {
           <div className='relative h-144 w-full rounded-lg '>
             <Image
               className='mx-auto object-contain'
-              src={urlForImage(value).url()}
+              src={urlForImage(value).url() as any}
               alt='Blog Post Image'
               fill
             />

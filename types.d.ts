@@ -15,6 +15,7 @@ interface LiveEvent extends Base {
   title: string;
   videoLink: string;
   description: string;
+  location: string;
   subtitle: string;
   keywords: string;
   slug: Slug;
@@ -29,7 +30,7 @@ interface KeyEvent extends Base {
   description: Block[];
 }
 
-interface Post extends Base {
+interface Article extends Base {
   author: Author;
   body: Block[];
   categories: Category[];
@@ -38,6 +39,7 @@ interface Post extends Base {
   title: string;
   keywords: string;
   description: string;
+  location: string;
   videoLink: string;
   isCurrentEvent: boolean;
   hasEmbeddedVideo: string;
@@ -47,15 +49,28 @@ interface Post extends Base {
 }
 
 interface Author extends Base {
+  slug: Slug;
+  name: string;
+  title: string;
+  order: number;
+  website: string;
+  twitter: string;
+  instagram: string;
+  facebook: string;
+  youtube: string;
+  linkedin: string;
+  tiktok: string;
+  email: string;
   bio: Block[];
   image: Image;
-  name: string;
-  slug: Slug;
+  relatedArticles: Article[];
 }
+
 
 interface Image {
   _type: 'image';
   asset: Reference;
+  alt: string;
 }
 
 interface Reference {
@@ -68,7 +83,7 @@ interface Slug {
   current: string;
 }
 
-interface Block {
+interface Block extends React.ReactNode {
   _key: string;
   _type: 'block';
   children: Span[];
@@ -84,6 +99,7 @@ interface Span {
 }
 
 interface Category extends Base {
+  slug: Slug;
   description: string;
   title: string;
 }
@@ -117,4 +133,11 @@ interface Comment {
   _rev: string;
   _type: string;
   _updatedAt: string;
+}
+
+interface Policy {
+  title: Title;
+  slug: Slug;
+  order: number;
+  description: Block[];
 }

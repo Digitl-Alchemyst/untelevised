@@ -1,10 +1,10 @@
 'use client';
 /* eslint-disable react/function-component-definition */
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { client } from '@/l/sanity.client';
+import { client } from '@/l/sanity/client';
 
 type Props = {
-  post: Post;
+  post: Article;
 };
 
 type Input = {
