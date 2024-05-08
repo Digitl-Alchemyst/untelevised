@@ -5,7 +5,6 @@ import { presentationTool } from 'sanity/presentation';
 import { schemaTypes } from './schemas';
 import { myTheme } from '@/lib/sanity/theme';
 import StudioNavbar from '@/c/studio/StudioNavbar';
-import Logo from '@/c/studio/Logo';
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!;
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET!;

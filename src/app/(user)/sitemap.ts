@@ -1,5 +1,5 @@
 // sitemap.ts
-import getAllNews from '@/util/getAllNews';
+import getAllNews from '@/u/getAllNews';
 
 export default async function sitemap(): Promise<
   {

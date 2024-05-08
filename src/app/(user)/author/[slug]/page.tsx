@@ -28,7 +28,7 @@ export default async function Author({ params: { slug } }: Props) {
           <div className='flex flex-row space-x-8 px-6 py-4 md:space-x-18'>
             <div className='rounded-md border border-untele/80 shadow-md'>
               <Image
-                src={urlForImage(author.image as any)?.url() || ''}
+                src={author.image ? urlForImage(author.image as any).url() : ''}
                 width={320}
                 height={320}
                 alt='image'

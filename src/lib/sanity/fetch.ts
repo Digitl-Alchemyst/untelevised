@@ -51,7 +51,7 @@ export default async function sanityFetch<QueryResponse>({
   return client.fetch<QueryResponse>(query, params, {
     stega,
     perspective: 'published',
-    cache: 'no-store',
+    cache: 'force-cache',
     // The `published` perspective is available on the API CDN
     useCdn: true,
     // Only enable Stega in production if it's a Vercel Preview Deployment, as the Vercel Toolbar supports Visual Editing
