@@ -1,9 +1,10 @@
 /* eslint-disable react/function-component-definition */
-/* eslint-disable import/prefer-default-export */
 import { groq } from 'next-sanity';
 import { PortableText } from '@portabletext/react';
 import { RichTextComponents } from '@/c/RichTextComponents';
 import { client } from '@/l/sanity/client';
+import { queryPolicyBySlug } from '@/lib/sanity/queries';
+import sanityFetch from '@/lib/sanity/fetch';
 
 type Props = {
   params: {
@@ -11,35 +12,8 @@ type Props = {
   };
 };
 
-// export const revalidate = 60 * 60 * 24 * 7;
-export const revalidate = 15;
-
-export async function generateStaticParams() {
-  const query = groq`*[_type=='policies']
-  {
-    slug
-  }`;
-
-  const slugs: any = await client.fetch(query);
-  const slugRoutes = slugs ? slugs.map((slug: any) => slug.slug.current) : [];
-
-  return slugRoutes.map((slug) => ({
-    slug,
-  }));
-}
-
-async function Policies({ params: { slug } }: Props) {
-  const query = groq`
-    *[_type == "policies" && slug.current == $slug][0] {
-      ...,
-      policies-> {
-        title,
-        lastUpdated,
-        description,
-      },
-    }`;
-
-  const policies = await client.fetch(query, { slug });
+export default async function Policies({ params: { slug } }: Props) {
+  const policies = await getPolicyBySlug(slug);
 
   return (
     <>
@@ -54,6 +28,30 @@ async function Policies({ params: { slug } }: Props) {
       </section>
     </>
   );
+};
+
+// Call the Sanity Fetch Function for the Author Information
+async function getPolicyBySlug(slug: string) {
+  try {
+    // Fetch author data from Sanity
+    const policy: Policy = await sanityFetch({
+      query: queryPolicyBySlug,
+      params: { slug },
+      tags: ['policies'],
+    });
+    return policy;
+  } catch (error) {
+    console.error('Failed to fetch author:', error);    
+    return null;
+  }
 }
 
-export default Policies;
+// Generate the static params for the author list
+export async function generateStaticParams() {
+  const query = groq`*[_type=='policies'] { slug }`;
+  const slugs: any = await client.fetch(query);
+  const slugRoutes = slugs ? slugs.map((slug: any) => slug.slug.current) : [];
+  return slugRoutes.map((slug) => ({
+    slug,
+  }));
+}

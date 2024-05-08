@@ -17,7 +17,7 @@ export const RichTextComponents = {
           <div className='relative h-144 w-full rounded-lg '>
             <Image
               className='mx-auto object-contain'
-              src={urlForImage(value).url()}
+              src={urlForImage(value).url() as any}
               alt='Blog Post Image'
               fill
             />

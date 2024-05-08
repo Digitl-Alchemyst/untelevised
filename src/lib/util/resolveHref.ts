@@ -12,7 +12,7 @@ const pageRoutes: PageRoutes = {
   post: { path: '/post/:slug' },
   category: { path: '/category/:slug' },
   liveevent: { path: '/live-event/:slug' },
-  gallerycategory: { path: '/gallerycategory/:slug' },
+  policies: { path: '/policies/:slug' },
   author: { path: '/author/:slug' },
 };
 

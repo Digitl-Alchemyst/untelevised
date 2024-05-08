@@ -1,3 +1,4 @@
+/* eslint-disable react/function-component-definition */
 import React from 'react';
 import ClientSideRoute from '../ClientSideRoute';
 import Image from 'next/image';
@@ -10,7 +11,7 @@ type Props = {
   liveEvents: LiveEvent[];
 };
 
-const LiveWidget = ({ liveEvents }: Props) => {
+export default function LiveWidget({ liveEvents }: Props) {
   // Check if liveEvents has any items and return nothing if empty
   if (liveEvents.length === 0) {
     return;
@@ -123,4 +124,3 @@ const LiveWidget = ({ liveEvents }: Props) => {
   );
 };
 
-export default LiveWidget;

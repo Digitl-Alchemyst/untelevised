@@ -1,4 +1,4 @@
-export default function formatCategoryTitle(title: string): string {
+export default function formatTitleForURL(title: string): string {
   return title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 }
 

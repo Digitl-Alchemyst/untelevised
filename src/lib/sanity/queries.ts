@@ -1,17 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import { groq } from 'next-sanity';
 
-export const queryAllPost = groq`
-  *[_type=='post'] {
-    ...,
-    author->,
-    categories[]->,
-    description,
-    publistedAt,
-  } 
-  | order(_createdAt desc)
-`;
-
 export const queryLiveEvents = groq`
   *[_type=='liveEvent' && isCurrentEvent == true] {
    ...,
@@ -46,6 +35,18 @@ export const queryEventBySlug = groq`
         eventDate,
       }
     }`;
+
+export const queryAllPost = groq`
+  *[_type=='post'] {
+    ...,
+    author->,
+    categories[]->,
+    description,
+    publistedAt,
+  } 
+  | order(_createdAt desc)
+`;
+
 export const queryArticleBySlug = groq`
     *[_type == 'post' && slug.current == $slug][0] {
       ...,
@@ -68,6 +69,25 @@ export const queryArticleByCategory = groq`
   } | order(_createdAt desc)
 `;
 
+export const queryCategories = groq`
+  *[_type == "category"] {
+    _id,
+    title,
+    order
+  }  
+`;
+
+export const queryAllAuthors = groq`
+  *[_type == "author" ] {
+    ...,
+    author-> {
+      name,
+      image,
+      title,
+    },
+  } 
+  | order(author.order desc)
+  `;
 export const queryAuthorBySlug = groq`
   *[_type == 'author' && slug.current == $slug][0] {
     ...,
@@ -78,3 +98,21 @@ export const queryAuthorBySlug = groq`
     }
   }
 `;
+
+export const queryPoliciesList = groq`
+  *[_type == "policies"] {
+    _id,
+    title,
+    order
+  }  
+`;
+
+export const queryPolicyBySlug = groq`
+    *[_type == "policies" && slug.current == $slug][0] {
+      ...,
+      policies-> {
+        title,
+        lastUpdated,
+        description,
+      },
+    }`;

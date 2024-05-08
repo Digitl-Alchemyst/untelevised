@@ -52,6 +52,7 @@ interface Author extends Base {
   slug: Slug;
   name: string;
   title: string;
+  order: number;
   website: string;
   twitter: string;
   instagram: string;
@@ -132,4 +133,11 @@ interface Comment {
   _rev: string;
   _type: string;
   _updatedAt: string;
+}
+
+interface Policy {
+  title: Title;
+  slug: Slug;
+  order: number;
+  description: Block[];
 }

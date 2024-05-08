@@ -23,33 +23,37 @@ export default async function Author({ params: { slug } }: Props) {
   return (
     <>
       <hr className='mx-auto mb-8 max-w-[95wv] border-untele md:max-w-[85vw]' />
-      <section className='mb-6 py-4'>
-        <div className='mx-4 flex max-w-4xl flex-col justify-center rounded-md border border-untele/80 bg-slate-400 text-slate-900 shadow-md md:mx-auto'>
-          <div className='flex flex-row space-x-8 px-6 py-4 md:space-x-18'>
-            <div className='rounded-md border border-untele/80 shadow-md'>
-              <Image
-                src={author.image ? urlForImage(author.image as any).url() : ''}
-                width={320}
-                height={320}
-                alt='image'
-                className='rounded-md shadow-md'
-              />
-            </div>
 
-            <div className='flex flex-col space-y-2'>
-              <h1 className='text-2xl font-bold md:text-3xl lg:text-4xl'>
-                {author.name}
-              </h1>
-              <h3 className='text-xl font-semibold text-slate-700'>
-                {author.title}
-              </h3>
-              <AuthorLinks author={author} />
-            </div>
+      {/* Author Information */}
+      <section className='mx-4 mb-6 flex max-w-4xl flex-col justify-center rounded-md border border-untele/80 bg-slate-400 py-4 text-slate-900 shadow-md md:mx-auto'>
+
+        {/* Author Details  */}
+        <div className='flex flex-row space-x-8 px-6 py-4 md:space-x-18'>
+          <div className='rounded-md border border-untele/80 shadow-md'>
+            <Image
+              src={author.image ? urlForImage(author.image as any).url() : ''}
+              width={320}
+              height={320}
+              alt='image'
+              className='rounded-md shadow-md'
+            />
           </div>
-          <div className='flex flex-col justify-between px-6 py-5'>
-            <PortableText value={author.bio} components={RichTextComponents} />
+          <div className='flex flex-col space-y-2'>
+            <h1 className='text-2xl font-bold md:text-3xl lg:text-4xl'>
+              {author.name}
+            </h1>
+            <h3 className='text-xl font-semibold text-slate-700'>
+              {author.title}
+            </h3>
+            <AuthorLinks author={author} />
           </div>
         </div>
+
+        {/* Author Bio  */}
+        <div className='flex flex-col justify-between px-6 py-5'>
+          <PortableText value={author.bio} components={RichTextComponents} />
+        </div>
+
       </section>
 
       {/* Authored Articles  */}
@@ -68,6 +72,7 @@ export default async function Author({ params: { slug } }: Props) {
           ))}
         </div>
       </section>
+      
     </>
   );
 }
@@ -83,7 +88,7 @@ async function getAuthorBySlug(slug: string): Promise<Author | null> {
     });
     return author;
   } catch (error) {
-    console.error('Failed to fetch author:', error);    
+    console.error('Failed to fetch author:', error);
     return null;
   }
 }

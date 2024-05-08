@@ -6,7 +6,7 @@ import { RichTextComponents } from '@/c/RichTextComponents';
 import SocialShare from '@/c/SocialShare';
 import { client } from '@/l/sanity/client';
 import urlForImage from '@/u/urlForImage';
-import EventMap from '@/components/EventMap';
+import EventMap from '@/components/post/EventMap';
 import formatDate from '@/lib/util/formatDate';
 import { queryEventBySlug } from '@/lib/sanity/queries';
 import sanityFetch from '@/lib/sanity/fetch';
@@ -21,7 +21,7 @@ type Props = {
   };
 };
 
-async function Article({ params: { slug } }: Props) {
+export default  async function LiveEvent({ params: { slug } }: Props) {
   const liveEvent: LiveEvent = (await getEventBySlug(slug)) as LiveEvent;
 
   const allEvents = [
@@ -32,7 +32,7 @@ async function Article({ params: { slug } }: Props) {
           source: 'relatedArticles',
         }))
       : []),
-      // Check if liveEvent.keyEvent is an array. If Truthy map over it and return an array of objects with the source property set to the source of the key event.
+    // Check if liveEvent.keyEvent is an array. If Truthy map over it and return an array of objects with the source property set to the source of the key event.
     ...(Array.isArray(liveEvent.keyEvent)
       ? liveEvent.keyEvent.map((event) => ({
           ...event,
@@ -51,8 +51,6 @@ async function Article({ params: { slug } }: Props) {
     // Compare the eventDate strings directly to determine the order
     return a.eventDate > b.eventDate ? -1 : a.eventDate < b.eventDate ? 1 : 0;
   });
-
-
 
   return (
     <>
@@ -77,7 +75,7 @@ async function Article({ params: { slug } }: Props) {
 
           {/* Info Block  */}
           <div className='flex w-full flex-col space-y-2 py-2'>
-            {/* Title & Date    */}
+            {/* Title & Date */}
             <div className='flex w-full  flex-col space-y-1'>
               {liveEvent.isCurrentEvent && (
                 <h2 className='w-min animate-pulse rounded bg-untele px-3 py-1 text-2xl font-bold text-slate-200'>
@@ -86,8 +84,9 @@ async function Article({ params: { slug } }: Props) {
               )}
               <h1 className='w-full text-3xl font-bold'>{liveEvent.title}</h1>
 
+              {/* Location & Date  */}
               <div>
-                {/* <h3>{liveEvent.location}</h3> */}
+                <h3>{liveEvent.location}</h3>
                 <p>{formatDate(liveEvent.eventDate || liveEvent._createdAt)}</p>
               </div>
             </div>
@@ -145,7 +144,7 @@ async function Article({ params: { slug } }: Props) {
                               resolveHref('post', event.slug?.current) || ''
                             }
                           >
-                            <button className='cursor-pointer self-end rounded-md border border-untele/40 bg-slate-700/30 px-3 py-1 font-bold hover:text-blue-700 text-untele/60 underline hover:opacity-80'>
+                            <button className='cursor-pointer self-end rounded-md border border-untele/40 bg-slate-700/30 px-3 py-1 font-bold text-untele/60 underline hover:text-blue-700 hover:opacity-80'>
                               Read More
                             </button>
                           </ClientSideRoute>
@@ -177,9 +176,7 @@ async function Article({ params: { slug } }: Props) {
       </article>
     </>
   );
-}
-
-export default Article;
+};
 
 // Call the Sanity Fetch Function for the Article by Slug
 async function getEventBySlug(slug: string) {

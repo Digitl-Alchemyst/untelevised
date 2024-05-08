@@ -13,7 +13,7 @@ import sanityFetch from '@/lib/sanity/fetch';
 import resolveHref from '@/l/util/resolveHref';
 import formatDate from '@/lib/util/formatDate';
 
-export { generateMetadata } from '@/l/generateMetadata';
+export { generateMetadata } from '@/lib/util/metadata/generateMetadata';
 
 type Props = {
   params: {
@@ -21,7 +21,6 @@ type Props = {
   };
 };
 
-export const revalidate = 10;
 export default async function Article({ params: { slug } }: Props) {
   const article: Article = await getArticleBySlug(slug) as Article;
 

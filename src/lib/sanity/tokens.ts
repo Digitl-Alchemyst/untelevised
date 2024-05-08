@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { experimental_taintUniqueValue } from 'react';
+// import { experimental_taintUniqueValue } from 'react';
 
 export const readToken = process.env.SANITY_API_READ_TOKEN;
 export const writeToken = process.env.SANITY_API_WRITE_TOKEN;

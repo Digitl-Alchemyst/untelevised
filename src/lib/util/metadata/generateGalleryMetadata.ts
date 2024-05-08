@@ -2,7 +2,7 @@
 import { groq } from 'next-sanity';
 import { client } from '@/lib/sanity/client';
 import urlForImage, { urlForOpenGraphImage } from '@/u/urlForImage';
-import { queryGalleryMetadata } from '../sanity/queries';
+import { queryGalleryMetadata } from '../../sanity/queries';
 import { Metadata } from 'next';
 
 type Props = {
