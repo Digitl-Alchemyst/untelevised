@@ -13,19 +13,18 @@ import {
 import { FaThreads } from 'react-icons/fa6';
 import { MdLiveTv } from 'react-icons/md';
 import { RiKickLine } from 'react-icons/ri';
-import ClientSideRoute from '../ClientSideRoute';
+import ClientSideRoute from '../providers/ClientSideRoute';
 import sanityFetch from '@/lib/sanity/fetch';
 import { queryCategories, queryPoliciesList } from '@/lib/sanity/queries';
 import resolveHref from '@/lib/util/resolveHref';
 import formatTitleForURL from '@/lib/util/formatTitleForURL';
 
 async function Footer() {
-
   const categories: any = await getNewsCategories();
   const sortedCategories = categories.sort((a, b) => a.order - b.order);
 
   const policies: any = await getPoliciesList();
-    const sortedPolicies = policies.sort((a, b) => a.order - b.order);
+  const sortedPolicies = policies.sort((a, b) => a.order - b.order);
 
   return (
     <div className='flex flex-col space-y-10 bg-slate-600 px-2 py-3'>
@@ -173,17 +172,16 @@ async function Footer() {
           <h4 className='hidden pb-2 text-xl font-semibold text-slate-950 underline md:flex'>
             Policies
           </h4>
-          {sortedPolicies
-            .map((policy) => (
-              <ClientSideRoute
-                route={
-                  resolveHref('policies', formatTitleForURL(policy.title)) || ''
-                }
-                key={policy._id}
-              >
-                {policy.title}
-              </ClientSideRoute>
-            ))}
+          {sortedPolicies.map((policy) => (
+            <ClientSideRoute
+              route={
+                resolveHref('policies', formatTitleForURL(policy.title)) || ''
+              }
+              key={policy._id}
+            >
+              {policy.title}
+            </ClientSideRoute>
+          ))}
         </div>
 
         {/* About */}
@@ -229,7 +227,6 @@ async function Footer() {
 }
 
 export default Footer;
-
 
 // Call the Sanity Fetch Function for a list of All Authors
 async function getPoliciesList() {

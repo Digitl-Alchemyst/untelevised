@@ -1,6 +1,6 @@
 /* eslint-disable react/function-component-definition */
 import React from 'react';
-import ClientSideRoute from '../ClientSideRoute';
+import ClientSideRoute from '../providers/ClientSideRoute';
 import Image from 'next/image';
 import urlForImage from '@/u/urlForImage';
 import getTimeSinceEvent from '@/lib/util/getTimeSinceEvent';
@@ -122,5 +122,4 @@ export default function LiveWidget({ liveEvents }: Props) {
       </div>
     </div>
   );
-};
-
+}

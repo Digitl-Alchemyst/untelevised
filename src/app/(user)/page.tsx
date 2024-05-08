@@ -3,7 +3,7 @@ import ArticleCardLg from '@/components/cards/ArticleCardLg';
 import LiveWidget from '@/components/cards/LiveWidget';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import ClientSideRoute from '@/components/ClientSideRoute';
+import ClientSideRoute from '@/components/providers/ClientSideRoute';
 import { queryAllPost, queryLiveEvents } from '@/lib/sanity/queries';
 import sanityFetch from '@/lib/sanity/fetch';
 import resolveHref from '@/lib/util/resolveHref';
@@ -32,7 +32,7 @@ export default async function HomePage() {
       <SpeedInsights />
     </div>
   );
-};
+}
 
 // Call the Sanity Fetch Function for the Front Page News
 async function getFrontPageNews() {
@@ -47,7 +47,7 @@ async function getFrontPageNews() {
     const posts: Article[] = await sanityFetch({
       query: queryAllPost,
       tags: ['post'],
-    });  
+    });
 
     // Return both post and liveEvent data
     return { liveEvents, posts };

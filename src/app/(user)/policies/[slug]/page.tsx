@@ -1,7 +1,7 @@
 /* eslint-disable react/function-component-definition */
 import { groq } from 'next-sanity';
 import { PortableText } from '@portabletext/react';
-import { RichTextComponents } from '@/c/RichTextComponents';
+import { RichTextComponents } from '@/components/providers/RichTextComponents';
 import { client } from '@/l/sanity/client';
 import { queryPolicyBySlug } from '@/lib/sanity/queries';
 import sanityFetch from '@/lib/sanity/fetch';
@@ -28,7 +28,7 @@ export default async function Policies({ params: { slug } }: Props) {
       </section>
     </>
   );
-};
+}
 
 // Call the Sanity Fetch Function for the Author Information
 async function getPolicyBySlug(slug: string) {
@@ -41,7 +41,7 @@ async function getPolicyBySlug(slug: string) {
     });
     return policy;
   } catch (error) {
-    console.error('Failed to fetch author:', error);    
+    console.error('Failed to fetch author:', error);
     return null;
   }
 }

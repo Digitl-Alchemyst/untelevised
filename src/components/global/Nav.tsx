@@ -1,5 +1,5 @@
 /* eslint-disable react/function-component-definition */
-import ClientSideRoute from '../ClientSideRoute';
+import ClientSideRoute from '../providers/ClientSideRoute';
 import sanityFetch from '@/lib/sanity/fetch';
 import { queryCategories } from '@/lib/sanity/queries';
 import formatTitleForURL from '@/lib/util/formatTitleForURL';

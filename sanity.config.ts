@@ -3,18 +3,27 @@ import { structureTool } from 'sanity/structure';
 import { visionTool } from '@sanity/vision';
 import { presentationTool } from 'sanity/presentation';
 import { schemaTypes } from './schemas';
+import {
+  apiVersion,
+  dataset,
+  projectId,
+  studioUrl,
+  title,
+} from '@/lib/sanity/api';
 import { myTheme } from '@/lib/sanity/theme';
 import StudioNavbar from '@/c/studio/StudioNavbar';
 
-const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!;
-const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET!;
 
 export default defineConfig({
-  basePath: '/studio',
+  basePath: studioUrl,
+
   name: 'UnTelevised_CMS_Studio',
-  title: 'UnTelevised Studio',
-  projectId,
-  dataset,
+  title: title,
+
+  projectId: projectId,
+  dataset: dataset,
+  apiVersion: apiVersion,
+
   plugins: [
     structureTool({}),
     presentationTool({
@@ -26,11 +35,13 @@ export default defineConfig({
     }),
     visionTool({}),
   ],
+
   schema: {
     types: schemaTypes,
   },
   studio: {
     components: {
+
       navbar: StudioNavbar,
     },
   },

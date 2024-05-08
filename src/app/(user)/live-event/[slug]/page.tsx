@@ -2,8 +2,8 @@
 import Image from 'next/image';
 import { groq } from 'next-sanity';
 import { PortableText } from '@portabletext/react';
-import { RichTextComponents } from '@/c/RichTextComponents';
-import SocialShare from '@/c/SocialShare';
+import { RichTextComponents } from '@/components/providers/RichTextComponents';
+import SocialShare from '@/components/global/SocialShare';
 import { client } from '@/l/sanity/client';
 import urlForImage from '@/u/urlForImage';
 import EventMap from '@/components/post/EventMap';
@@ -11,7 +11,7 @@ import formatDate from '@/lib/util/formatDate';
 import { queryEventBySlug } from '@/lib/sanity/queries';
 import sanityFetch from '@/lib/sanity/fetch';
 import getTimeSinceEvent from '@/lib/util/getTimeSinceEvent';
-import ClientSideRoute from '@/components/ClientSideRoute';
+import ClientSideRoute from '@/components/providers/ClientSideRoute';
 import resolveHref from '@/lib/util/resolveHref';
 // export { generateMetadata } from '@/util/generateLiveEventMetadata';
 
@@ -21,7 +21,7 @@ type Props = {
   };
 };
 
-export default  async function LiveEvent({ params: { slug } }: Props) {
+export default async function LiveEvent({ params: { slug } }: Props) {
   const liveEvent: LiveEvent = (await getEventBySlug(slug)) as LiveEvent;
 
   const allEvents = [
@@ -176,7 +176,7 @@ export default  async function LiveEvent({ params: { slug } }: Props) {
       </article>
     </>
   );
-};
+}
 
 // Call the Sanity Fetch Function for the Article by Slug
 async function getEventBySlug(slug: string) {

@@ -2,11 +2,11 @@
 import Image from 'next/image';
 import { groq } from 'next-sanity';
 import { PortableText } from '@portabletext/react';
-import { RichTextComponents } from '@/c/RichTextComponents';
-import SocialShare from '@/c/SocialShare';
+import { RichTextComponents } from '@/components/providers/RichTextComponents';
+import SocialShare from '@/components/global/SocialShare';
 import { client } from '@/l/sanity/client';
 import urlForImage from '@/u/urlForImage';
-import ClientSideRoute from '@/components/ClientSideRoute';
+import ClientSideRoute from '@/components/providers/ClientSideRoute';
 import { queryArticleBySlug } from '@/lib/sanity/queries';
 import sanityFetch from '@/lib/sanity/fetch';
 // import Comments from '@/c/post/Comments';
@@ -22,7 +22,7 @@ type Props = {
 };
 
 export default async function Article({ params: { slug } }: Props) {
-  const article: Article = await getArticleBySlug(slug) as Article;
+  const article: Article = (await getArticleBySlug(slug)) as Article;
 
   return (
     <>
@@ -50,7 +50,9 @@ export default async function Article({ params: { slug } }: Props) {
                     <p>{formatDate(article.eventDate || article._createdAt)}</p>
                   </div>
                   <ClientSideRoute
-                    route={resolveHref('author', article.author.slug?.current) || ''}
+                    route={
+                      resolveHref('author', article.author.slug?.current) || ''
+                    }
                   >
                     <div className='flex items-center justify-start space-x-3 py-2'>
                       <Image
@@ -131,7 +133,7 @@ export default async function Article({ params: { slug } }: Props) {
       </article>
     </>
   );
-};
+}
 
 // Call the Sanity Fetch Function for the Article by Slug
 async function getArticleBySlug(slug: string) {

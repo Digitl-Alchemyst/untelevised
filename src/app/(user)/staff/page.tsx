@@ -1,7 +1,7 @@
 /* eslint-disable react/function-component-definition */
 import Image from 'next/image';
 import urlForImage from '@/u/urlForImage';
-import ClientSideRoute from '@/components/ClientSideRoute';
+import ClientSideRoute from '@/components/providers/ClientSideRoute';
 import { queryAllAuthors } from '@/lib/sanity/queries';
 import sanityFetch from '@/lib/sanity/fetch';
 import resolveHref from '@/lib/util/resolveHref';
@@ -38,7 +38,7 @@ export default async function StaffPage() {
         ))}
     </div>
   );
-};
+}
 
 // Call the Sanity Fetch Function for a list of All Authors
 async function getAllStaff(): Promise<Author[]> {

@@ -11,6 +11,8 @@ import Script from 'next/script';
 import Nav from '@/components/global/Nav';
 import Footer from '@/components/global/Footer';
 import { GoogleAdSense } from 'next-google-adsense';
+import { VisualEditing } from 'next-sanity';
+
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -81,30 +83,27 @@ export default async function RootLayout({
         </>
       )}
       <body className={`bg-slate-400/70 scrollbar-hide ${inter.className}`}>
-        {draftMode().isEnabled ? (
+        <>
+          {process.env.NODE_ENV === 'production' && (
+            <>
+              <GoogleAdSense />
+            </>
+          )}
+          <Header />
+          <Nav />
+          <Banner />
+          {draftMode().isEnabled && (
+            <div>
+              <a className='block bg-blue-300 p-4' href='/api/disable-draft'>
+                Disable preview mode
+              </a>
+            </div>
+          )}
+          {children}
+          {draftMode().isEnabled && <VisualEditing />}
+          <Footer />
+        </>
 
-                      <>
-                      <Header />
-                      <Nav />                      
-                      {children}
-                      <Banner />
-                      <Footer />
-                      </>
-
-        ) : (
-          <>
-            {process.env.NODE_ENV === 'production' && (
-              <>
-                <GoogleAdSense />
-              </>
-            )}
-            <Header />
-            <Nav />
-            <Banner />
-            {children}
-            <Footer />
-          </>
-        )}
         {process.env.NODE_ENV === 'production' && (
           <>
             <noscript

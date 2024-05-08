@@ -3,7 +3,7 @@ import { groq } from 'next-sanity';
 import { client } from '@/lib/sanity/client';
 import ArticleCardLg from '@/components/cards/ArticleCardLg';
 import { queryArticleByCategory } from '@/lib/sanity/queries';
-import ClientSideRoute from '@/components/ClientSideRoute';
+import ClientSideRoute from '@/components/providers/ClientSideRoute';
 import sanityFetch from '@/lib/sanity/fetch';
 import resolveHref from '@/lib/util/resolveHref';
 
@@ -54,8 +54,8 @@ async function getArticlesByCategory(slug: string): Promise<Article[] | null> {
 export async function generateStaticParams() {
   const query = groq`*[_type=='category'] { slug }`;
   const slugs: Category[] = await client.fetch(query);
-  const slugRoutes = slugs ? slugs.map((slug) => slug.slug.current) : [];  
+  const slugRoutes = slugs ? slugs.map((slug) => slug.slug.current) : [];
   return slugRoutes.map((slug) => ({
     slug,
   }));
-  }
+}

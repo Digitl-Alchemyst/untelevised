@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import { groq } from 'next-sanity';
+// import { groq } from 'next-sanity';
 import { client } from '@/lib/sanity/client';
 import urlForImage, { urlForOpenGraphImage } from '@/u/urlForImage';
 import { queryBlogMetadata } from '../../sanity/queries';

@@ -2,13 +2,13 @@
 import Image from 'next/image';
 import { groq } from 'next-sanity';
 import { PortableText } from '@portabletext/react';
-import { RichTextComponents } from '@/c/RichTextComponents';
+import { RichTextComponents } from '@/components/providers/RichTextComponents';
 import { client } from '@/l/sanity/client';
 import urlForImage from '@/u/urlForImage';
 import sanityFetch from '@/lib/sanity/fetch';
 import { queryAuthorBySlug } from '@/lib/sanity/queries';
 import AuthorLinks from '@/components/global/AuthorLinks';
-import ClientSideRoute from '@/components/ClientSideRoute';
+import ClientSideRoute from '@/components/providers/ClientSideRoute';
 import ArticleCardLg from '@/components/cards/ArticleCardLg';
 import resolveHref from '@/lib/util/resolveHref';
 type Props = {
@@ -26,7 +26,6 @@ export default async function Author({ params: { slug } }: Props) {
 
       {/* Author Information */}
       <section className='mx-4 mb-6 flex max-w-4xl flex-col justify-center rounded-md border border-untele/80 bg-slate-400 py-4 text-slate-900 shadow-md md:mx-auto'>
-
         {/* Author Details  */}
         <div className='flex flex-row space-x-8 px-6 py-4 md:space-x-18'>
           <div className='rounded-md border border-untele/80 shadow-md'>
@@ -53,7 +52,6 @@ export default async function Author({ params: { slug } }: Props) {
         <div className='flex flex-col justify-between px-6 py-5'>
           <PortableText value={author.bio} components={RichTextComponents} />
         </div>
-
       </section>
 
       {/* Authored Articles  */}
@@ -72,7 +70,6 @@ export default async function Author({ params: { slug } }: Props) {
           ))}
         </div>
       </section>
-      
     </>
   );
 }
